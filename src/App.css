@@ -55,6 +55,8 @@ label{
 .component-container{
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
@@ -73,7 +75,7 @@ label{
   background-color: var(--background-color);
   color: var(--point-color3);
   width: 100%;
-  height: 3rem;
+  height: 4rem;
   border: none;
 }
 
@@ -161,11 +163,17 @@ label{
 #login-btn {
   width: 100%;
   height: 3rem;
-  border: 1px solid cornflowerblue;
+  border: 1px solid var(--point-color3);
   border-radius: 8px;
-  background-color: var(--secondary-color);
+  background-color: var(--point-color3);
   color: white;
   font-weight: bolder;
+}
+
+.custom-link{
+  text-decoration: none;
+  color: var(--point-color2);
+  margin-bottom: 0.5rem;
 }
 
 .find {
@@ -235,3 +243,24 @@ label{
   justify-content: center;
 }
 
+.terms-container {
+  width: 100%;
+  height: 300px; /* 원하는 높이로 설정 */
+  overflow-y: scroll; /* 수직 스크롤 가능 */
+  
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.terms-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.terms-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.terms-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}

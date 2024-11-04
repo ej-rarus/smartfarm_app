@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 export default function LoginForm() {
   return (
     <div className="component-container">
-      <div className="login-container">
         <form id="login-form">
           <input id="id-input" type="text" placeholder="아이디"></input>
           <input id="pw-input" type="password" placeholder="비밀번호"></input>
@@ -20,7 +19,6 @@ export default function LoginForm() {
             <span className="span-text">비밀번호를 잊어버리셨나요?</span>
           </Link>
         </div>
-      </div>
     </div>
   );
 }
