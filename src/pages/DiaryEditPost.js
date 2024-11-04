@@ -46,7 +46,7 @@ export default function DiaryEditPost() {
   };
 
   return (
-    <div className="content-wrap">
+    <div className="page-container">
       <h1 className="page-title">글 수정</h1>
       <form className="std-form" onSubmit={handleSubmit}>
         <div className="std-form-container">

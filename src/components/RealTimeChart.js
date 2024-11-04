@@ -46,9 +46,8 @@ function RealTimeChart() {
     }, []);
 
     return (
-        <div>
+        <div className='graph-container'>
             <h2>실시간 데이터 그래프</h2>
-            <div className='graph-container'>
             <Line
                 data={chartData}
                 options={{
@@ -76,7 +75,6 @@ function RealTimeChart() {
                     },
                 }}
             />
-            </div>
         </div>
     );
 }

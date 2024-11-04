@@ -29,7 +29,7 @@ function Diary() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="content-wrap">
+    <div className="page-container">
       <h1 className="page-title">Diary</h1>
       <hr
         style={{
@@ -57,17 +57,13 @@ function Diary() {
               "en-CA"
             );
             return (
-              <div key={item.post_id}>
-                <div
-                  className="post-list-row"
-                  onClick={() => navigate(`/diary/${item.post_id}`)}
-                >
-                  <div className="post-id">{item.post_id}</div>
-                  <div className="post-title">{item.post_title}</div>
-                  <div className="post-author">{item.author}</div>
-                  <div className="post-create-date">{formattedDate}</div>
-                </div>
+              <div className="post-card" key={item.post_id} onClick={() => navigate(`/diary/${item.post_id}`)}>
+                <div className="post-id">{item.post_id}</div>
+                <div className="post-title">{item.post_title}</div>
+                <div className="post-author">{item.author}</div>
+                <div className="post-create-date">{formattedDate}</div>
               </div>
+              
             );
           })}
       </div>

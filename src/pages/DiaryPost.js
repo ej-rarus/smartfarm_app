@@ -33,7 +33,7 @@ function DiaryPost() {
   if (!post) return <p>No post found.</p>;
 
   return (
-    <div className="content-wrap">
+    <div className="page-container">
       <h1 className="page-title">{post.post_title}</h1>
       <p>글쓴이: {post.author}</p>
       <p>작성일자: {new Date(post.create_date).toLocaleDateString("en-CA")}</p>

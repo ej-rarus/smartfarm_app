@@ -6,28 +6,22 @@ import { useNavigate } from "react-router-dom";
 
 function Nav({ menuVisible, setMenuVisible }) {
   const navigate = useNavigate();
-
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible); // 상태를 토글
+  };
   return (
-    <div className="component-container">
       <div className="nav">
         <div className="main-logo-container">
           <div className="main-logo" onClick={() => navigate("/")}>
-            SF-Mark1
+            스마트팜앱
           </div>
         </div>
         <div className="nav-btn-container">
-          <div className="nav-btn">About</div>
-          <div className="nav-btn">Dashboard</div>
-          <div className="nav-btn">Control</div>
-          <div className="nav-btn">Diary</div>
-          <div className="nav-btn">Contact</div>
-
-          <div id="burger-menu-btn">
+          <div id="burger-menu-btn" onClick={toggleMenu}>
             <FontAwesomeIcon icon={faBars} size="2x" /> {/* 버거 아이콘 */}
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

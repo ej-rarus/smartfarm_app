@@ -25,7 +25,7 @@ function DiaryNewPost() {
   };
 
   return (
-    <div className="content-wrap">
+    <div className="page-container">
       <h1 className="page-title">새 글 작성</h1>
       <form className="std-form" onSubmit={handleSubmit}>
         <div className="std-form-container">

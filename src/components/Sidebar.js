@@ -7,11 +7,9 @@ function Sidebar({menuVisible, setMenuVisible}){
 
     return(
         <div id="sidebar-container"  style={{display: menuVisible ? 'flex' : 'none'}}>
-            <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/about')}}>About</div>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/dashboard')}}>Dashboard</div>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/controlpanel')}}>Control</div>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/diary')}}>Diary</div>
-            <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/contact')}}>Contact</div>
         </div>
     );
 }

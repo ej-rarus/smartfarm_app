@@ -1,3 +1,10 @@
 export default function Main() {
-  return <div className="page-container"></div>;
+  return (
+    <div className="page-container">
+      <div className="">
+        
+      </div>
+
+    </div>
+  );
 }

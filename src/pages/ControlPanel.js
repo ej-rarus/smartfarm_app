@@ -2,7 +2,6 @@ import '../App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ResponsiveContainer ,XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
-import { Tooltip } from 'chart.js';
 
 function ControlPanel() {
   const [data, setData] = useState([]);
@@ -70,7 +69,7 @@ function ControlPanel() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="content-wrap">
+    <div className="page-container">
       <h1 className="page-title">제어패널</h1>
       <hr
         style={{
@@ -81,19 +80,16 @@ function ControlPanel() {
           marginTop: '0.5rem',
         }}
       />
-      <div id="control-panel">
         {/* 여기에 차트를 추가해줘야 합니다 */}
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="90%" height={300}>
             <LineChart data={data2}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis/>
-                <Tooltip/>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" />
                 <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
             </LineChart>
         </ResponsiveContainer>
-      </div>
     </div>
   );
 }

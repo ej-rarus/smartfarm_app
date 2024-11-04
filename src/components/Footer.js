@@ -4,7 +4,7 @@ import '../App.css';
 function Footer(){
     return (
 
-        <div>
+        <div className="component-container">
             <footer>
                 <div className="footer-content-wrap">
                     <div className="footer-content">© 2024 EJ, Inc.</div>
