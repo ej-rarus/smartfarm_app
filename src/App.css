@@ -1,9 +1,23 @@
 :root {
-  --main-color: #015c92;
-  --secondary-color: #2d82b5;
-  --third-color: #53a7d8;
-  --forth-color: #88cdf6;
-  --fifth-color: #bce6ff;
+  --background-color: #ffffff;
+  --main-color: #000000;
+  --point-color1: #f2f2f3;
+  --point-color2: #9ad862;
+  --point-color3: #02b6fe;
+}
+
+@font-face {
+  font-family: 'EF_jejudoldam';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2210-EF@1.0/EF_jejudoldam.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
 }
 
 *{
@@ -20,8 +34,6 @@ label{
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background: linear-gradient(to bottom, white, var(--main-color));
-
 }
 
 .page-container{
@@ -31,6 +43,13 @@ label{
   align-items: center;
   width: 90%;
   margin-top: 1rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.page-title{
+  font-family: 'Pretendard-Regular';
+
 }
 
 .component-container{
@@ -51,8 +70,8 @@ label{
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: black;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--point-color3);
   width: 100%;
   height: 3rem;
   border: none;
@@ -63,6 +82,8 @@ label{
 }
 
 #main-logo {
+  font-family: 'EF_jejudoldam';
+  font-size: large;
   cursor: pointer;
 }
 
@@ -84,8 +105,8 @@ label{
   top: 3rem;
   display: flex;
   flex-direction: column;
-  background-color: black;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--point-color2);
   border: none;
   width: 100%;
   padding-left: 2rem;
@@ -96,6 +117,7 @@ label{
 .sidebar-btn{
   display: flex;
   cursor: pointer;
+  font-family: 'Pretendard-Regular';
 
 }
 
@@ -180,6 +202,8 @@ label{
 
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
 }
 
 .graph-container{
@@ -211,6 +235,3 @@ label{
   justify-content: center;
 }
 
-.main-test{
-
-}

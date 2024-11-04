@@ -13,7 +13,7 @@ function Nav({ menuVisible, setMenuVisible }) {
       <div className="nav">
         <div className="main-logo-container">
           <div id="main-logo" onClick={() => {navigate('/');}}>
-            스마트팜앱
+            FARMSTER
           </div>
         </div>
         <div className="nav-btn-container">
