@@ -38,26 +38,6 @@ function DiaryNewPost() {
             required
           />
         </div>
-        
-        <div className="std-form-container">
-          <label>글쓴이</label>
-          <input
-            className="input-field"
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
-          />
-        </div>
-        <div className="std-form-container">
-          <label>내용</label>
-          <textarea
-            className="input-field"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          ></textarea>
-        </div>
         <div className="std-form-container">
           <label>카테고리</label>
           <select
@@ -75,6 +55,26 @@ function DiaryNewPost() {
           </select>
         </div>
         <div className="std-form-container">
+          <label>글쓴이</label>
+          <input
+            className="input-field"
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            required
+          />
+        </div>
+        <div className="std-form-container">
+          <label>내용</label>
+          <textarea
+            className="input-field long-text-input"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+          ></textarea>
+        </div>
+        
+        <div id="submit-btn-container" className="std-form-container">
           <button className="std-btn" type="submit">작성</button>
           <button className="std-btn" type="cancel">취소</button>
         </div>
