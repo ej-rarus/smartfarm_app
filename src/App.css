@@ -20,6 +20,8 @@ label{
   flex-direction: column;
   align-items: center;
   width: 100%;
+  background: linear-gradient(to bottom, white, var(--main-color));
+
 }
 
 .page-container{
@@ -207,4 +209,8 @@ label{
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.main-test{
+
 }
