@@ -12,7 +12,7 @@ function Nav({ menuVisible, setMenuVisible }) {
   return (
       <div className="nav">
         <div className="main-logo-container">
-          <div className="main-logo" onClick={() => {setMenuVisible(false); navigate('/');}}>
+          <div className="main-logo" onClick={() => {navigate('/');}}>
             스마트팜앱
           </div>
         </div>
