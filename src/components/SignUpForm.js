@@ -1,6 +1,6 @@
 import "../App.css";
 import Terms from "./Terms";
-
+import MarketingInfo from "./MarketingInfo";
 
 export default function SignUpForm() {
   const handleSubmit = (e) => {
@@ -16,6 +16,7 @@ export default function SignUpForm() {
               E-mail
             </label>
             <input
+              className="std-input-field"
               type="text"
               placeholder="이메일을 입력하세요"
               name="email"
@@ -28,6 +29,7 @@ export default function SignUpForm() {
             비밀번호
           </label>
           <input
+            className="std-input-field"
             type="password"
             placeholder="비밀번호를 입력하세요"
             name="password"
@@ -40,6 +42,7 @@ export default function SignUpForm() {
             비밀번호 확인
           </label>
           <input
+            className="std-input-field"
             type="password"
             placeholder="비밀번호를 다시 입력하세요"
             name="password-confirm"
@@ -53,6 +56,7 @@ export default function SignUpForm() {
             이름
           </label>
           <input
+            className="std-input-field"
             type="text"
             placeholder="이름을 입력하세요"
             name="user-name"
@@ -61,26 +65,30 @@ export default function SignUpForm() {
         </div>
         <div className="std-form-container">
         {/* 이용약관 및 개인정보처리방침 동의: 필수 항목으로, 사용자가 약관과 개인정보 정책에 동의하도록 체크박스를 제공합니다. */}
-        <label className="terms">
+        <fieldset className="marketing-option" required>
+        <label className="terms">이용약관 및 개인정보처리방침</label>
           <Terms/>
-          <input type="checkbox" name="terms-confirm" required />
-          <span>이용약관 및 개인정보 처리방침에 동의합니다.</span>
-        </label>
+          <div className="checkbox-container"> 
+            <input type="checkbox" name="terms-confirm" required/>
+            <span>이용약관 및 개인정보 처리방침에 동의합니다.</span>
+          </div>
+          </fieldset>
         </div>
 
         <div className="std-form-container">
         {/* 마케팅 및 프로모션 정보 수신 동의: 선택사항으로, 마케팅 정보 수신 여부를 결정할 수 있습니다. */}
-        <fieldset className="marketing-option">
-          <legend>마케팅 정보 수신 동의</legend>
-          <label>
-            <input type="radio" name="marketing" value="1" />
-            동의
-          </label>
-          <label>
-            <input type="radio" name="marketing" value="0" />
-            거부
-          </label>
-        </fieldset>
+          <fieldset className="marketing-option" required>
+            <legend>마케팅 정보 수신 동의</legend>
+            <MarketingInfo />
+            <label>
+              <input type="radio" name="marketing" value="1" />
+              동의
+            </label>
+            <label>
+              <input type="radio" name="marketing" value="0" />
+              거부
+            </label>
+          </fieldset>
         </div>
         
         <div className="std-form-container">
@@ -92,7 +100,7 @@ export default function SignUpForm() {
         
         <div className="std-form-container">
           {/* 제출 버튼 */}
-          <button type="submit" className="submit-btn">
+          <button type="submit" className="submit-btn" onClick={()=>{}}>
             회원가입
           </button>
         </div>

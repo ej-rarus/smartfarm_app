@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faRightToBracket  } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faRightToBracket, faCircleUser  } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 function Nav({ menuVisible, setMenuVisible }) {
@@ -17,6 +17,9 @@ function Nav({ menuVisible, setMenuVisible }) {
           </div>
         </div>
         <div className="nav-btn-container">
+          <div id="" className="" >
+            <FontAwesomeIcon icon={faCircleUser} size="2x" />
+          </div>
           <div id="sign-in-btn" className="nav-btn" onClick={()=>navigate("/login")}>
             <FontAwesomeIcon icon={faRightToBracket} size="2x" />
           </div>
