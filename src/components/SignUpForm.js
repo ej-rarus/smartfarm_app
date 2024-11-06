@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 
@@ -13,10 +14,13 @@ export default function SignUpForm() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [username, setUsername] = useState(""); // 이름 필드 추가
+  const [termsConfirmed, setTermsConfirmed] = useState(false); // 약관 동의 필드
+  const [marketingInfo, setMarketingInfo] = useState("0"); // 마케팅 동의 필드
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 필수 조건을 모두 확인
@@ -33,8 +37,24 @@ export default function SignUpForm() {
       return;
     }
     
-    // 모든 조건을 충족하면 /welcome 페이지로 이동
-    navigate('/welcome');
+    // 서버로 전송할 데이터 객체 생성
+    const userData = {
+      email,
+      password,
+      username,
+      termsConfirmed,
+      marketingInfo,
+    };
+
+    try {
+      // 회원가입 정보 서버에 전송
+      await axios.post("https://your-server-url.com/api/signup", userData);
+      alert("회원가입이 완료되었습니다.");
+      navigate('/welcome');
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
   };
 
   const checkEmailDuplication = async () => {
@@ -73,6 +93,18 @@ export default function SignUpForm() {
     const confirmValue = e.target.value;
     setPasswordConfirm(confirmValue);
     setIsPasswordMatch(confirmValue !== "" && password !== "" && confirmValue === password);
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handleTermsConfirmChange = (e) => {
+    setTermsConfirmed(e.target.checked);
+  };
+
+  const handleMarketingInfoChange = (e) => {
+    setMarketingInfo(e.target.value);
   };
 
   // 비밀번호 강도 평가 함수
@@ -151,7 +183,14 @@ export default function SignUpForm() {
         {/* 이름 */}
         <div className="std-form-container">
           <label>이름</label>
-          <input className="std-input-field" type="text" placeholder="이름을 입력하세요" name="user-name" required />
+          <input
+            className="std-input-field"
+            type="text"
+            placeholder="이름을 입력하세요"
+            value={username}
+            onChange={handleUsernameChange}
+            required
+          />
         </div>
 
         {/* 이용약관 */}
@@ -160,7 +199,13 @@ export default function SignUpForm() {
             <label className="terms">이용약관 및 개인정보처리방침</label>
             <Terms />
             <div className="checkbox-container">
-              <input type="checkbox" name="terms-confirm" required />
+              <input
+                type="checkbox"
+                name="terms-confirm"
+                checked={termsConfirmed}
+                onChange={handleTermsConfirmChange}
+                required
+              />
               <span>이용약관 및 개인정보 처리방침에 동의합니다.</span>
             </div>
           </fieldset>
@@ -172,11 +217,23 @@ export default function SignUpForm() {
             <legend>마케팅 정보 수신 동의</legend>
             <MarketingInfo />
             <label>
-              <input type="radio" name="marketing" value="1" />
+              <input
+                type="radio"
+                name="marketing"
+                value="1"
+                checked={marketingInfo === "1"}
+                onChange={handleMarketingInfoChange}
+              />
               동의
             </label>
             <label>
-              <input type="radio" name="marketing" value="0" />
+              <input
+                type="radio"
+                name="marketing"
+                value="0"
+                checked={marketingInfo === "0"}
+                onChange={handleMarketingInfoChange}
+              />
               거부
             </label>
           </fieldset>
