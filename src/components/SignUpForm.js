@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "../App.css";
+import { useNavigate } from "react-router-dom";
+
 import Terms from "./Terms";
 import MarketingInfo from "./MarketingInfo";
 
@@ -12,8 +14,12 @@ export default function SignUpForm() {
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 필수 조건을 모두 확인
     if (!isEmailUnique) {
       alert("이메일 중복 확인을 완료해 주세요.");
       return;
@@ -26,7 +32,9 @@ export default function SignUpForm() {
       alert("유효한 이메일 형식을 입력해 주세요.");
       return;
     }
-    // 이메일 인증 및 회원가입 요청을 처리합니다.
+    
+    // 모든 조건을 충족하면 /welcome 페이지로 이동
+    navigate('/welcome');
   };
 
   const checkEmailDuplication = async () => {

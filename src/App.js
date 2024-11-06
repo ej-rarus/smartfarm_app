@@ -12,10 +12,12 @@ import Diary from "./pages/Diary";
 import DiaryNewPost from "./pages/DiaryNewPost";
 import DiaryEditPost from "./pages/DiaryEditPost";
 import DiaryPost from "./pages/DiaryPost";
+import ForgotPassword from "./pages/ForgotPassword";
+import Welcome from "./pages/Welcome";
+
 
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
-import ForgotPassword from "./pages/ForgotPassword";
 
 function AppContent() {
   const location = useLocation();
@@ -40,6 +42,8 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/welcome" element={<Welcome />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
