@@ -14,16 +14,16 @@ export default function SignUpForm() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [username, setUsername] = useState(""); // 이름 필드 추가
-  const [termsConfirmed, setTermsConfirmed] = useState(false); // 약관 동의 필드
-  const [marketingInfo, setMarketingInfo] = useState("0"); // 마케팅 동의 필드
+  const [username, setUsername] = useState("");
+  const [marketingInfo, setMarketingInfo] = useState(true);
+
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 필수 조건을 모두 확인
+    // 유효성 검사
     if (!isEmailUnique) {
       alert("이메일 중복 확인을 완료해 주세요.");
       return;
@@ -36,19 +36,17 @@ export default function SignUpForm() {
       alert("유효한 이메일 형식을 입력해 주세요.");
       return;
     }
-    
-    // 서버로 전송할 데이터 객체 생성
+
+    // 서버로 전송할 데이터
     const userData = {
-      email,
+      email_adress: email,
       password,
       username,
-      termsConfirmed,
-      marketingInfo,
+      marketing_agree: marketingInfo,
     };
 
     try {
-      // 회원가입 정보 서버에 전송
-      await axios.post("https://your-server-url.com/api/signup", userData);
+      await axios.post("http://3.39.126.121:3000/api/signup", userData);
       alert("회원가입이 완료되었습니다.");
       navigate('/welcome');
     } catch (error) {
@@ -58,10 +56,6 @@ export default function SignUpForm() {
   };
 
   const checkEmailDuplication = async () => {
-    if (!email.trim()) {
-      alert("이메일을 입력해 주세요.");
-      return;
-    }
     if (!isEmailValid) {
       alert("유효한 이메일 형식을 입력해 주세요.");
       return;
@@ -86,7 +80,7 @@ export default function SignUpForm() {
     const newPassword = e.target.value;
     setPassword(newPassword);
     setIsPasswordMatch(newPassword === passwordConfirm);
-    setPasswordStrength(checkPasswordStrength(newPassword)); // 비밀번호 강도 업데이트
+    setPasswordStrength(checkPasswordStrength(newPassword));
   };
 
   const handlePasswordConfirmChange = (e) => {
@@ -97,10 +91,6 @@ export default function SignUpForm() {
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
-  };
-
-  const handleTermsConfirmChange = (e) => {
-    setTermsConfirmed(e.target.checked);
   };
 
   const handleMarketingInfoChange = (e) => {
@@ -202,8 +192,6 @@ export default function SignUpForm() {
               <input
                 type="checkbox"
                 name="terms-confirm"
-                checked={termsConfirmed}
-                onChange={handleTermsConfirmChange}
                 required
               />
               <span>이용약관 및 개인정보 처리방침에 동의합니다.</span>
@@ -220,8 +208,8 @@ export default function SignUpForm() {
               <input
                 type="radio"
                 name="marketing"
-                value="1"
-                checked={marketingInfo === "1"}
+                value={true}
+                checked={marketingInfo === true}
                 onChange={handleMarketingInfoChange}
               />
               동의
@@ -230,8 +218,8 @@ export default function SignUpForm() {
               <input
                 type="radio"
                 name="marketing"
-                value="0"
-                checked={marketingInfo === "0"}
+                value={false}
+                checked={marketingInfo === false}
                 onChange={handleMarketingInfoChange}
               />
               거부
