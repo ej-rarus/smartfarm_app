@@ -66,6 +66,14 @@ label{
   width: 100%;
 }
 
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
+}
+
 .header{
   width: 100%;
 }
@@ -306,4 +314,17 @@ label{
   border-radius: 8px;
   border: 1px solid #c5ccd2;
 
+}
+
+
+.약함 {
+  color: red;
+}
+
+.보통 {
+  color: orange;
+}
+
+.강함 {
+  color: green;
 }
