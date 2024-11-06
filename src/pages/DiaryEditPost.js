@@ -14,7 +14,7 @@ export default function DiaryEditPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://3.39.126.121:3000/diary/${id}`);
+        const response = await axios.get(`http://3.39.126.121:3000/api/diary/${id}`);
         const post = response.data;
         setTitle(post.post_title);
         setCategory(post.post_category);
@@ -32,7 +32,7 @@ export default function DiaryEditPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://3.39.126.121:3000/diary/${id}`, {
+      await axios.put(`http://3.39.126.121:3000/api/diary/${id}`, {
         post_title: title,
         post_category: category,
         author: author,

@@ -17,7 +17,7 @@ function DiaryPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://3.39.126.121:3000/diary/${id}`);
+        const response = await axios.get(`http://3.39.126.121:3000/api/diary/${id}`);
         setPost(response.data); // 게시글 데이터 설정
         setLoading(false);
       } catch (err) {

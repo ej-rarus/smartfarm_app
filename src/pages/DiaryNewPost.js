@@ -12,7 +12,7 @@ function DiaryNewPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://3.39.126.121:3000/diary", {
+      await axios.post("http://3.39.126.121:3000/api/diary", {
         post_title: title,
         post_category: category,
         author: author,
