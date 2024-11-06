@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
+    "date-fns": "^4.1.0",
     "gsap": "^3.12.5",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
@@ -48,8 +49,8 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-transform-private-property-in-object": "^7.25.9",
-    "@babel/plugin-proposal-private-property-in-object":"^7.21.11",
     "prettier": "^3.3.3"
   }
 }

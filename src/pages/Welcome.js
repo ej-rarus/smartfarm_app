@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+
 
 export default function Welcome() {
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(3); // 초기 카운트다운 값 설정
+  const currentDate = new Date();
+  const formattedDate = format(currentDate, "yyyy. MM. dd. h:mm a");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -21,7 +25,8 @@ export default function Welcome() {
 
   return (
     <div className="page-container">
-      <span>{`'username'님, 회원가입이 완료되었습니다!`}</span>
+      <span>{`'username'님, 가입해주셔서 감사합니다.`}</span>
+      <div>{formattedDate}</div>
       <span>{`${countdown}초 후에 메인 페이지로 이동합니다.`}</span>
     </div>
   );
