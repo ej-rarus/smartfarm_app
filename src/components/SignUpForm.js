@@ -30,6 +30,10 @@ export default function SignUpForm() {
   };
 
   const checkEmailDuplication = async () => {
+    if (!email.trim()) {
+      alert("이메일을 입력해 주세요.");
+      return;
+    }
     if (!isEmailValid) {
       alert("유효한 이메일 형식을 입력해 주세요.");
       return;
