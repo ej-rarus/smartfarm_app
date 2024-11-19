@@ -13,7 +13,7 @@ function Diary() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://3.39.126.121:3000/api/diary");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`);
         setData(response.data);
         setLoading(false);
       } catch (err) {

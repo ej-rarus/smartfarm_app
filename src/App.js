@@ -18,6 +18,7 @@ import Welcome from "./pages/Welcome";
 
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
@@ -38,13 +39,37 @@ function AppContent() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/welcome" element={<Welcome />} />
         
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/controlpanel" element={<ControlPanel />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/controlpanel" element={
+          <ProtectedRoute>
+            <ControlPanel />
+          </ProtectedRoute>
+        } />
         
-        <Route path="/diary/new" element={<DiaryNewPost />} />
-        <Route path="/diary/edit/:id" element={<DiaryEditPost />} />
-        <Route path="/diary/:id" element={<DiaryPost />} />
-        <Route path="/diary" element={<Diary />} />
+        <Route path="/diary/new" element={
+          <ProtectedRoute>
+            <DiaryNewPost />
+          </ProtectedRoute>
+        } />
+        <Route path="/diary/edit/:id" element={
+          <ProtectedRoute>
+            <DiaryEditPost />
+          </ProtectedRoute>
+        } />
+        <Route path="/diary/:id" element={
+          <ProtectedRoute>
+            <DiaryPost />
+          </ProtectedRoute>
+        } />
+        <Route path="/diary" element={
+          <ProtectedRoute>
+            <Diary />
+          </ProtectedRoute>
+        } />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

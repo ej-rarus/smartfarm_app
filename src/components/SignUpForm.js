@@ -46,7 +46,7 @@ export default function SignUpForm() {
     };
 
     try {
-      await axios.post("http://3.39.126.121:3000/api/signup", userData);
+      await axios.post(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/signup`, userData);
       alert("회원가입이 완료되었습니다.");
       navigate('/welcome');
     } catch (error) {

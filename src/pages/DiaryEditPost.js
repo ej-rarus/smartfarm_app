@@ -32,7 +32,7 @@ export default function DiaryEditPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://3.39.126.121:3000/api/diary/${id}`, {
+      await axios.put(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`, {
         post_title: title,
         post_category: category,
         author: author,

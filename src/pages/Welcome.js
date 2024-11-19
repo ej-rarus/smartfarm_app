@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 export default function Welcome() {
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(3); // 초기 카운트다운 값 설정
+  const [countdown, setCountdown] = useState(parseInt(process.env.REACT_APP_WELCOME_COUNTDOWN || '3'));
   const currentDate = new Date();
   const formattedDate = format(currentDate, "yyyy. MM. dd. h:mm a");
 
