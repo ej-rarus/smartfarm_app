@@ -155,7 +155,7 @@ label{
   
 }
 
-#id-input {
+#email-input {
   margin-top: 1rem;
   border-radius: 8px 8px 0 0;
   border: 1px solid #c5ccd2;
@@ -166,7 +166,7 @@ label{
   padding-left: 1rem;
 }
 
-#pw-input {
+#password {
   margin-bottom: 1rem;
   border-radius: 0 0 8px 8px;
   border: 1px solid #c5ccd2;
