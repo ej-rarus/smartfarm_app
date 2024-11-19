@@ -33,17 +33,19 @@ function AppContent() {
       <Sidebar menuVisible={menuVisible} setMenuVisible={setMenuVisible} />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/controlpanel" element={<ControlPanel />} />
-        <Route path="/diary" element={<Diary />} />
-        <Route path="/diary/:id" element={<DiaryPost />} />
-        <Route path="/diary/new" element={<DiaryNewPost />} />
-        <Route path="/diary/edit/:id" element={<DiaryEditPost />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/welcome" element={<Welcome />} />
-
+        
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/controlpanel" element={<ControlPanel />} />
+        
+        <Route path="/diary/new" element={<DiaryNewPost />} />
+        <Route path="/diary/edit/:id" element={<DiaryEditPost />} />
+        <Route path="/diary/:id" element={<DiaryPost />} />
+        <Route path="/diary" element={<Diary />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
