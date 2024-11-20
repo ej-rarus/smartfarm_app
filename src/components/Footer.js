@@ -15,9 +15,8 @@ function Footer() {
     return (
         <div className="component-container">
             <footer>
-                <div className="footer-content-wrap">
-                    <div className="footer-content">© 2024 EJ, Inc.</div>
                     <div className="footer-content-container">
+                        <div className="footer-content">© 2024 FARMSTER, Inc.</div>
                         {footerLinks.map(link => (
                             <div 
                                 key={link.id} 
@@ -29,7 +28,6 @@ function Footer() {
                             </div>
                         ))}
                     </div>
-                </div>
             </footer>
         </div>
     );

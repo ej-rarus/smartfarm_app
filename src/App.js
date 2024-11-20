@@ -14,6 +14,7 @@ import DiaryEditPost from "./pages/DiaryEditPost";
 import DiaryPost from "./pages/DiaryPost";
 import ForgotPassword from "./pages/ForgotPassword";
 import Welcome from "./pages/Welcome";
+import ResetPassword from "./pages/ResetPassword";
 
 
 import Nav from "./components/Nav";
@@ -71,6 +72,9 @@ function AppContent() {
             <Diary />
           </ProtectedRoute>
         } />
+        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
