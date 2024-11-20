@@ -25,7 +25,7 @@ function Nav({ menuVisible, setMenuVisible }) {
           </div>
         </div>
         <div className="nav-btn-container">
-          {isLoggedIn ? (<div id="" className="nav-btn" >
+          {isLoggedIn ? (<div id="my-page-btn" className="nav-btn" onClick={() => navigate('/mypage')}>
             <FontAwesomeIcon icon={faCircleUser} size="2x" />
           </div>):(<div></div>)}
           

@@ -79,9 +79,8 @@ label{
 }
 
 .nav{
-  position:sticky;
+  position: sticky;
   top: 0;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -91,6 +90,7 @@ label{
   width: 100%;
   height: 4rem;
   border: none;
+  z-index: 1001;
 }
 
 .main-logo-container{
@@ -117,17 +117,24 @@ label{
 }
 
 #sidebar-container{
-  position: sticky;
-  top: 3rem;
-  display: flex;
-  flex-direction: column;
+  position: fixed;
+  top: 4rem;
+  left: -300px;
+  width: 250px;
+  height: 100vh;
   background-color: var(--background-color);
   color: var(--point-color2);
   border: none;
-  width: 100%;
   padding-left: 2rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+#sidebar-container.open {
+  left: 0;
 }
 
 .sidebar-btn{

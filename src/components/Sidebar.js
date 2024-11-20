@@ -6,7 +6,7 @@ function Sidebar({menuVisible, setMenuVisible}){
     const navigate = useNavigate();
 
     return(
-        <div id="sidebar-container"  style={{display: menuVisible ? 'flex' : 'none'}}>
+        <div id="sidebar-container" className={menuVisible ? 'open' : ''}>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/')}}>Main</div>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/dashboard')}}>Dashboard</div>
             <div className="sidebar-btn" onClick={()=>{setMenuVisible(!menuVisible); navigate('/controlpanel')}}>Control</div>
