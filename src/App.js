@@ -19,6 +19,7 @@ import Welcome from "./pages/Welcome";
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 
 function AppContent() {
   const location = useLocation();
@@ -81,6 +82,8 @@ function App() {
   return (
     <BrowserRouter>
       <AppContent />
+      <Footer />
+
     </BrowserRouter>
   );
 }
