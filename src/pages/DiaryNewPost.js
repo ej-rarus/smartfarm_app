@@ -82,9 +82,9 @@ function DiaryNewPost() {
         </div>
         
         <div id="submit-btn-container" className="std-form-container">
-          <button className="std-btn" type="submit">작성</button>
+          <button className="edit-btn" type="submit">작성</button>
           <button 
-            className="std-btn" 
+            className="delete-btn" 
             type="button"
             onClick={() => navigate("/diary")}
           >
