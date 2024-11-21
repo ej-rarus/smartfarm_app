@@ -16,6 +16,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Welcome from "./pages/Welcome";
 import ResetPassword from "./pages/ResetPassword";
 import MyPage from "./pages/MyPage";
+import MyCrop from './pages/MyCrop';
+import MyCropNew from './pages/MyCropNew';
 
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
@@ -81,6 +83,8 @@ function AppContent() {
             <MyPage />
           </ProtectedRoute>
         } />
+        <Route path="/mycrop" element={<MyCrop />} />
+        <Route path="/mycrop/new" element={<MyCropNew />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

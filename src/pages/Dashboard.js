@@ -48,6 +48,11 @@ function Dashboard() {
                 </div>
             )}
             <RealTimeChart/>
+
+            <p>재배실 현황</p>
+            <p>카메라</p>
+            <p>온도</p>
+            <p>습도</p>
         </div>
     );
 }

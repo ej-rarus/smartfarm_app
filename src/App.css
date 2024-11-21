@@ -66,6 +66,10 @@ label{
   justify-content: center;
   align-items: center;
   width: 100%;
+  background: white;
+  border-radius: 10px;
+  margin: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .error-message {
@@ -236,10 +240,9 @@ label{
 .post-list-container{
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  max-width: 800px;
-  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
 }
 
 .post-card{
@@ -347,6 +350,10 @@ label{
 
 }
 
+footer{
+  width: 100%;
+}
+
 .footer-content-container{
   display: flex;
   flex-direction: row;
@@ -374,4 +381,61 @@ label{
 
 .강함 {
   color: green;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.news-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.news-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.news-item h3 {
+  margin: 0.5rem 0;
+}
+
+.news-item a {
+  color: #333;
+  text-decoration: none;
+}
+
+.news-item a:hover {
+  color: #007bff;
+}
+
+.news-description {
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.news-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #999;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.weather-main{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--point-color4);
+  border-radius: 15px;
 }

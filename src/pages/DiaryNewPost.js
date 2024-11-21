@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getCurrentUser } from '../utils/auth';
 
 function DiaryNewPost() {
   const [title, setTitle] = useState("");
@@ -8,6 +9,13 @@ function DiaryNewPost() {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (user && user.username) {
+      setAuthor(user.username);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +26,7 @@ function DiaryNewPost() {
         author: author,
         content: content,
       });
-      navigate("/diary"); // 글 작성 후 목록 페이지로 이동
+      navigate("/diary");
     } catch (err) {
       console.error(err);
     }
@@ -60,8 +68,7 @@ function DiaryNewPost() {
             className="input-field"
             type="text"
             value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
+            readOnly
           />
         </div>
         <div className="std-form-container">
@@ -76,7 +83,13 @@ function DiaryNewPost() {
         
         <div id="submit-btn-container" className="std-form-container">
           <button className="std-btn" type="submit">작성</button>
-          <button className="std-btn" type="cancel">취소</button>
+          <button 
+            className="std-btn" 
+            type="button"
+            onClick={() => navigate("/diary")}
+          >
+            취소
+          </button>
         </div>
       </form>
     </div>

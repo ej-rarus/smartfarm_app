@@ -16,7 +16,7 @@ function Footer() {
         <div className="component-container">
             <footer>
                     <div className="footer-content-container">
-                        <div className="footer-content">© 2024 FARMSTER, Inc.</div>
+                        <div className="footer-content" onClick={() => navigate('/')}>© 2024 FARMSTER, Inc.</div>
                         {footerLinks.map(link => (
                             <div 
                                 key={link.id} 

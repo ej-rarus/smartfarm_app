@@ -42,7 +42,6 @@ function MyPage() {
                 <div className="user-info">
                     <p>사용자 이름: {userData.username}</p>
                     <p>이메일: {userData.email}</p>
-                    <p>가입일: {new Date(userData.created_at).toLocaleDateString()}</p>
                 </div>
             )}
         </div>
