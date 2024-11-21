@@ -4,6 +4,8 @@
   --point-color1: #f2f2f3;
   --point-color2: #9ad862;
   --point-color3: #02b6fe;
+  --point-color4: #94e1ff;
+  --point-color5: #e9f9ff;
 }
 
 @font-face {
@@ -123,25 +125,43 @@ label{
   width: 250px;
   height: 100vh;
   background-color: var(--background-color);
-  color: var(--point-color2);
   border: none;
   padding-left: 2rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   transition: left 0.3s ease-in-out;
   z-index: 1000;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
 #sidebar-container.open {
   left: 0;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 .sidebar-btn{
   display: flex;
+  align-items: center;
+  width: 85%;
+  height: 3rem;
+  border-radius: 8px;
   cursor: pointer;
   font-family: 'Pretendard-Regular';
+  color: var(--point-color2);
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  font-weight: bolder;
+}
 
+.sidebar-btn:hover{
+  background-color: var(--point-color5);
+  color: var(--point-color3);
+}
+
+.sidebar-btn.active {
+  background-color: var(--point-color5);
+  color: var(--point-color3);
+  font-weight: 900;
+  border-right: 4px solid var(--point-color3);
 }
 
 .login-container{
@@ -216,9 +236,10 @@ label{
 .post-list-container{
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 1rem;
   width: 100%;
+  max-width: 800px;
+  padding: 1rem;
 }
 
 .post-card{
