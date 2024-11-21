@@ -8,6 +8,8 @@ function DiaryNewPost() {
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
+  const [image, setImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,15 +19,35 @@ function DiaryNewPost() {
     }
   }, []);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`, {
-        post_title: title,
-        post_category: category,
-        author: author,
-        content: content,
-      });
+      const formData = new FormData();
+      formData.append('post_title', title);
+      formData.append('post_category', category);
+      formData.append('author', author);
+      formData.append('content', content);
+      if (image) {
+        formData.append('image', image);
+      }
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
       navigate("/diary");
     } catch (err) {
       console.error(err);
@@ -39,7 +61,7 @@ function DiaryNewPost() {
         <div className="std-form-container">
           <label>제목</label>
           <input
-            className="input-field"
+            className="std-input-field"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -49,7 +71,7 @@ function DiaryNewPost() {
         <div className="std-form-container">
           <label>카테고리</label>
           <select
-            className="input-field"
+            className="std-input-field"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
@@ -63,9 +85,30 @@ function DiaryNewPost() {
           </select>
         </div>
         <div className="std-form-container">
+          <label>이미지</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className=""
+          />
+        </div>
+        <div className="std-form-container">
+
+          {previewUrl && (
+            <div className="image-preview-container">
+              <img 
+                src={previewUrl} 
+                alt="미리보기" 
+                className="preview-image"
+              />
+            </div>
+          )}
+        </div>
+        <div className="std-form-container">
           <label>글쓴이</label>
           <input
-            className="input-field"
+            className="std-input-field"
             type="text"
             value={author}
             readOnly
@@ -74,12 +117,13 @@ function DiaryNewPost() {
         <div className="std-form-container">
           <label>내용</label>
           <textarea
-            className="input-field long-text-input"
+            className="long-text-input"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
           ></textarea>
         </div>
+        
         
         <div id="submit-btn-container" className="std-form-container">
           <button className="edit-btn" type="submit">작성</button>

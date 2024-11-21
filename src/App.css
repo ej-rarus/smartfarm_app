@@ -291,6 +291,8 @@ label{
 
 .long-text-input{
   height: 15rem;
+  border-radius: 8px;
+  border: 1px solid #c5ccd2;
 }
 
 #submit-btn-container{
@@ -557,4 +559,20 @@ button {
   text-align: center;
   padding: 2rem;
   color: #666;
+}
+
+.image-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
 }

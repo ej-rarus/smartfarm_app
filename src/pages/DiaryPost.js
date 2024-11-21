@@ -59,6 +59,21 @@ function DiaryPost() {
         </div>
       </div>
 
+      {post.image_url && (
+        <div className="diary-post-image">
+          <img 
+            src={post.image_url} 
+            alt={post.post_title}
+            style={{ 
+              maxWidth: '100%', 
+              height: 'auto',
+              borderRadius: '8px',
+              marginBottom: '1rem'
+            }} 
+          />
+        </div>
+      )}
+
       <div className="diary-post-content">
         {post.post_content}
       </div>
