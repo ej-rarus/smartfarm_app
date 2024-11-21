@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { getCurrentUser } from "../utils/auth";
 
 export default function DiaryEditPost() {
   const { id } = useParams(); // 수정할 게시글 ID를 URL에서 가져옴
@@ -14,7 +15,15 @@ export default function DiaryEditPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://3.39.126.121:3000/api/diary/${id}`);
+        const user = getCurrentUser();
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+        );
         const post = response.data;
         setTitle(post.post_title);
         setCategory(post.post_category);
@@ -22,26 +31,51 @@ export default function DiaryEditPost() {
         setContent(post.post_content);
       } catch (err) {
         console.error("Failed to fetch post data:", err);
+        alert("게시글을 불러오는데 실패했습니다.");
+        navigate("/diary");
       }
     };
 
     fetchPost();
-  }, [id]);
+  }, [id, navigate]);
 
   // 수정된 게시글 데이터를 서버에 전송하는 함수
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`, {
-        post_title: title,
-        post_category: category,
-        author: author,
-        post_content: content,
-      });
-      navigate("/diary"); // 수정 후 목록 페이지로 이동
-      console.log("수정된 제목:", title);
+      const user = getCurrentUser();
+      const token = localStorage.getItem(process.env.REACT_APP_AUTH_TOKEN_KEY);
+      
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
+
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`,
+        {
+          post_title: title,
+          post_category: category,
+          author: author,
+          post_content: content,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      navigate("/diary");
     } catch (err) {
       console.error("Failed to update post:", err);
+      if (err.response?.status === 403) {
+        alert("권한이 없습니다. 다시 로그인해주세요.");
+        navigate("/login");
+      } else {
+        alert("게시글 수정 중 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -52,7 +86,7 @@ export default function DiaryEditPost() {
         <div className="std-form-container">
           <label>제목</label>
           <input
-            className="input-field"
+            className="std-input-field"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -63,7 +97,7 @@ export default function DiaryEditPost() {
         <div className="std-form-container">
           <label>글쓴이</label>
           <input
-            className="input-field"
+            className="std-input-field"
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
@@ -74,7 +108,7 @@ export default function DiaryEditPost() {
         <div className="std-form-container">
           <label>내용</label>
           <textarea
-            className="input-field"
+            className="std-input-field long-text-input"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
@@ -84,7 +118,7 @@ export default function DiaryEditPost() {
         <div className="std-form-container">
           <label>카테고리</label>
           <select
-            className="input-field"
+            className="std-input-field"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
@@ -98,10 +132,10 @@ export default function DiaryEditPost() {
           </select>
         </div>
 
-        <div className="std-form-container">
-          <button className="std-btn" type="submit">수정</button>
-          <button
-            className="std-btn"
+        <div id="submit-btn-container" className="std-form-container">
+          <button className="edit-btn" type="submit">수정</button>
+          <button 
+            className="delete-btn" 
             type="button"
             onClick={() => navigate("/diary")}
           >

@@ -69,7 +69,6 @@ label{
   background: white;
   border-radius: 10px;
   margin: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .error-message {
@@ -355,6 +354,7 @@ label{
   border-radius: 8px;
   border: 1px solid #c5ccd2;
 
+
 }
 
 footer{
@@ -574,5 +574,47 @@ button {
   max-width: 100%;
   max-height: 300px;
   object-fit: contain;
+  border-radius: 4px;
+}
+
+.file-input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.file-input-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--point-color3);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.file-input-button:hover {
+  background-color: var(--point-color2);
+}
+
+.file-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.file-name {
+  margin-left: 10px;
+  color: #666;
+}
+
+.image-preview {
+  margin-top: 1rem;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 10px;
   border-radius: 4px;
 }

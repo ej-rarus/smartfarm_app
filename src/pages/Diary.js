@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../utils/auth";
 
 function Diary() {
   const [data, setData] = useState([]);
@@ -19,7 +20,15 @@ function Diary() {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`);
+        const user = getCurrentUser();
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`,
+          {
+            headers: {
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+        );
         const sortedPosts = response.data.sort((a, b) => new Date(b.create_date) - new Date(a.create_date));
         setAllPosts(sortedPosts);
         const initialPosts = sortedPosts.slice(0, POSTS_PER_PAGE);

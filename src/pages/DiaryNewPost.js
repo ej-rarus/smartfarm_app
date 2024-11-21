@@ -30,6 +30,7 @@ function DiaryNewPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const user = getCurrentUser();
       const formData = new FormData();
       formData.append('post_title', title);
       formData.append('post_category', category);
@@ -44,13 +45,15 @@ function DiaryNewPost() {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${user.token}`
           }
         }
       );
       navigate("/diary");
     } catch (err) {
       console.error(err);
+      alert("게시글 작성 중 오류가 발생했습니다.");
     }
   };
 
@@ -86,21 +89,25 @@ function DiaryNewPost() {
         </div>
         <div className="std-form-container">
           <label>이미지</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className=""
-          />
-        </div>
-        <div className="std-form-container">
-
+          <div className="file-input-container">
+            <label htmlFor="file-upload" className="file-input-button">
+              파일 선택
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="file-input"
+            />
+            {image && <span className="file-name">{image.name}</span>}
+          </div>
           {previewUrl && (
-            <div className="image-preview-container">
+            <div className="image-preview">
               <img 
                 src={previewUrl} 
                 alt="미리보기" 
-                className="preview-image"
+                style={{ maxWidth: '100%', maxHeight: '200px' }} 
               />
             </div>
           )}

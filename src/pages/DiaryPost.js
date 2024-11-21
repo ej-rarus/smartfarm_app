@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { getCurrentUser } from "../utils/auth";
 
 function DiaryPost() {
   const { id } = useParams();
@@ -12,7 +13,15 @@ function DiaryPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`);
+        const user = getCurrentUser();
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+        );
         setPost(response.data);
         setLoading(false);
       } catch (err) {
@@ -26,7 +35,15 @@ function DiaryPost() {
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`);
+        const user = getCurrentUser();
+        await axios.delete(
+          `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary/${id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${user.token}`
+            }
+          }
+        );
         navigate('/diary');
       } catch (error) {
         alert('삭제 중 오류가 발생했습니다.');
@@ -58,21 +75,6 @@ function DiaryPost() {
           </span>
         </div>
       </div>
-
-      {post.image_url && (
-        <div className="diary-post-image">
-          <img 
-            src={post.image_url} 
-            alt={post.post_title}
-            style={{ 
-              maxWidth: '100%', 
-              height: 'auto',
-              borderRadius: '8px',
-              marginBottom: '1rem'
-            }} 
-          />
-        </div>
-      )}
 
       <div className="diary-post-content">
         {post.post_content}

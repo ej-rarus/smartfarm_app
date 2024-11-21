@@ -3,13 +3,21 @@ import axios from 'axios';
 // 로그인 상태 확인
 export const isAuthenticated = () => {
   const token = localStorage.getItem(process.env.REACT_APP_AUTH_TOKEN_KEY);
-  return !!token;
+  const user = getCurrentUser();
+  return !!token && !!user;
 };
 
 // 현재 사용자 정보 가져오기
 export const getCurrentUser = () => {
   const userStr = localStorage.getItem(process.env.REACT_APP_USER_KEY);
-  return userStr ? JSON.parse(userStr) : null;
+  const token = localStorage.getItem(process.env.REACT_APP_AUTH_TOKEN_KEY);
+  
+  if (!userStr || !token) {
+    return null;
+  }
+
+  const user = JSON.parse(userStr);
+  return { ...user, token };
 };
 
 // JWT 토큰 가져오기
