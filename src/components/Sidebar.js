@@ -48,12 +48,12 @@ function Sidebar({menuVisible, setMenuVisible}){
                     <>
                         <div className={`sidebar-btn ${isCurrentPath('/mypage') ? 'active' : ''}`}
                             onClick={()=>{setMenuVisible(!menuVisible); navigate('/mypage')}}>
-                            <FontAwesomeIcon icon={faCircleUser} className="sidebar-icon" />
-                            <span>&nbsp;마이페이지</span>
+                            <FontAwesomeIcon icon={faCircleUser} className="sidebar-icon" size="2x" />
+                            <span>&nbsp;&nbsp;마이페이지</span>
                         </div>
                         <div className="sidebar-btn" onClick={handleLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} className="sidebar-icon" />
-                            <span>&nbsp;로그아웃</span>
+                            <FontAwesomeIcon icon={faRightFromBracket} className="sidebar-icon" size="2x" />
+                            <span>&nbsp;&nbsp;로그아웃</span>
                         </div>
                     </>
                 ) : (

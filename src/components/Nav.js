@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faRightToBracket, faRightFromBracket ,faCircleUser  } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faRightToBracket, faRightFromBracket  } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { logout } from '../utils/auth';
 
@@ -25,10 +25,6 @@ function Nav({ menuVisible, setMenuVisible }) {
           </div>
         </div>
         <div className="nav-btn-container">
-          {isLoggedIn ? (<div id="my-page-btn" className="nav-btn" onClick={() => navigate('/mypage')}>
-            <FontAwesomeIcon icon={faCircleUser} size="2x" />
-          </div>):(<div></div>)}
-          
           {isLoggedIn ? (
             <div id="sign-out-btn" className="nav-btn" onClick={handleLogout}>
               <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
