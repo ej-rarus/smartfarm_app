@@ -6,36 +6,56 @@ export default function TodaysWeather() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        setLoading(true);
-        // 서울의 위도/경도
-        const lat = 37.5665;
-        const lon = 126.9780;
-        
-        const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=kr`
-        );
-        
-        setWeather(response.data);
-      } catch (err) {
-        setError('날씨 정보를 불러오는데 실패했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchWeather = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // 서울의 위도/경도
+      const lat = 37.5665;
+      const lon = 126.9780;
+      
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=kr`
+      );
+      
+      setWeather(response.data);
+    } catch (err) {
+      setError('날씨 정보를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchWeather();
   }, []);
 
-  if (loading) return <div className="weather-container">날씨 정보를 불러오는 중...</div>;
-  if (error) return <div className="weather-container">{error}</div>;
+  if (loading) return (
+    <div className="weather-container loading">
+      <div className="loading-spinner">날씨 정보를 불러오는 중...</div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="weather-container error">
+      <p>{error}</p>
+      <button 
+        className="retry-button"
+        onClick={fetchWeather}
+      >
+        <i className="fas fa-sync-alt"></i> 다시 시도
+      </button>
+    </div>
+  );
+
   if (!weather) return null;
 
   return (
     <div className="component-container">
-      <h2>오늘의 날씨</h2>
+      <div className="weather-header">
+        <h2>오늘의 날씨</h2>
+        
+      </div>
       <div className="weather-info">
         <div className="weather-main">
           <img 

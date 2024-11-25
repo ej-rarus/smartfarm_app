@@ -2,6 +2,7 @@
   "name": "smartfarm_app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://www.kamis.or.kr",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
