@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import RealTimeChart from '../components/RealTimeChart';
 import { isAuthenticated, getCurrentUser } from '../utils/auth';
 import "../App.css";
+import ArduinoSensorData from '../components/ArduinoSensorData';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -47,6 +48,7 @@ function Dashboard() {
                     <p>이메일: {userData.email}</p>
                 </div>
             )}
+            <ArduinoSensorData/>
             <RealTimeChart/>
 
             <p>재배실 현황</p>

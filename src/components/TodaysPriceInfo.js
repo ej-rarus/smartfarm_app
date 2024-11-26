@@ -10,40 +10,17 @@ export default function TodaysPriceInfo() {
     const fetchPriceData = async () => {
       try {
         setLoading(true);
-        const today = new Date();
-        const endDate = today.toISOString().split('T')[0];
-        const startDate = new Date(today.setMonth(today.getMonth() - 1))
-                          .toISOString().split('T')[0];
-
-        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
-        const API_URL = 'http://www.kamis.or.kr/service/price/xml.do';
         
-        const response = await axios.get(`${PROXY_URL}${API_URL}`, {
-          params: {
-            action: 'periodProductList',
-            p_productclscode: '02',
-            p_startday: startDate,
-            p_endday: endDate,
-            p_itemcategorycode: '200',
-            p_itemcode: '225',
-            p_kindcode: '00',
-            p_productrankcode: '04',
-            p_countrycode: '1101',
-            p_convert_kg_yn: 'Y',
-            p_cert_key: process.env.REACT_APP_KAMIS_CERT_KEY,
-            p_cert_id: process.env.REACT_APP_KAMIS_API_ID,
-            p_returntype: 'json'
-          }
-        });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/kamis/price`);
 
-        if (response.data.data?.error_code === '000') {
-          setPriceData(response.data.data.item);
+        if (response.data.status === 200 && response.data.data?.data?.item) {
+          setPriceData(response.data.data.data.item);
         } else {
-          setError('데이터를 불러오는데 실패했습니다.');
+          setError(response.data.message || '데이터를 불러오는데 실패했습니다.');
         }
       } catch (err) {
         console.error('가격 정보 조회 오류:', err);
-        setError('가격 정보를 불러오는데 실패했습니다.');
+        setError(err.response?.data?.message || '가격 정보를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
