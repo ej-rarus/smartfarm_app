@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import ParticlesComponent from "../components/ParticlesComponent";
 
 
 export default function Welcome() {
@@ -28,6 +29,7 @@ export default function Welcome() {
       <span>{`'username'님, 가입해주셔서 감사합니다.`}</span>
       <div>{formattedDate}</div>
       <span>{`${countdown}초 후에 메인 페이지로 이동합니다.`}</span>
+      <ParticlesComponent/>
     </div>
   );
 }

@@ -21,7 +21,9 @@ function Sidebar({menuVisible, setMenuVisible}){
     };
 
     return(
-        <div id="sidebar-container" className={menuVisible ? 'open' : ''}>
+        <div id="sidebar-container" className={menuVisible ? 'open' : ''} style={{
+            zIndex: 1,
+        }}>
             <div className={`sidebar-btn ${isCurrentPath('/') ? 'active' : ''}`} 
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/')}}>
                 Main

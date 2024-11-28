@@ -877,3 +877,52 @@ button {
   background-color: #f8d7da;
   border-radius: 4px;
 }
+
+.control-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.control-btn {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.on-btn {
+  background-color: var(--point-color3);
+  color: white;
+}
+
+.on-btn:hover:not(:disabled) {
+  background-color: var(--point-color2);
+}
+
+.off-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.off-btn:hover:not(:disabled) {
+  background-color: #c82333;
+}

@@ -1,6 +1,7 @@
 import '../App.css';
 import { useState, useEffect, useRef } from 'react';
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
+import StdControlBtn from '../components/StdControlBtn';
 
 function ControlPanel() {
   const [loading, setLoading] = useState(false);
@@ -137,6 +138,8 @@ function ControlPanel() {
         }}
       />
       
+      <StdControlBtn/>
+
       <div className="websocket-container">
         <div className="connection-status">
           연결 상태: {isConnected ? 

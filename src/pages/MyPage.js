@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, getCurrentUser } from '../utils/auth';
 import "../App.css";
-
 function MyPage() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
