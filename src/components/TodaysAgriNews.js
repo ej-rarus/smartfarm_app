@@ -42,9 +42,11 @@ export default function TodaysAgriNews() {
 
   return (
     <div className="component-container">
-      <h2>농업 뉴스</h2>
+      <h2>스마트팜 뉴스</h2>
       <div className="news-list">
-        {news.map((item, index) => (
+        {news
+          .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+          .map((item, index) => (
           <div key={index} className="news-item">
             {item.urlToImage && (
               <img 

@@ -26,19 +26,19 @@ function Sidebar({menuVisible, setMenuVisible}){
         }}>
             <div className={`sidebar-btn ${isCurrentPath('/') ? 'active' : ''}`} 
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/')}}>
-                Main
+                메인페이지
             </div>
             <div className={`sidebar-btn ${isCurrentPath('/dashboard') ? 'active' : ''}`}
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/dashboard')}}>
-                Dashboard
+                대시보드
             </div>
             <div className={`sidebar-btn ${isCurrentPath('/controlpanel') ? 'active' : ''}`}
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/controlpanel')}}>
-                Control
+                컨트롤패널
             </div>
             <div className={`sidebar-btn ${isCurrentPath('/diary') ? 'active' : ''}`}
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/diary')}}>
-                Diary
+                영농일지
             </div>
             <div className={`sidebar-btn ${isCurrentPath('/mycrop') ? 'active' : ''}`}
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/mycrop')}}>

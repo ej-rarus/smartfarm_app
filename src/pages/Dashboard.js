@@ -4,7 +4,6 @@ import RealTimeChart from '../components/RealTimeChart';
 import { isAuthenticated, getCurrentUser } from '../utils/auth';
 import "../App.css";
 import ArduinoSensorData from '../components/ArduinoSensorData';
-import StreamViewer from '../components/StreamViewer';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -50,7 +49,6 @@ function Dashboard() {
                 </div>
             )}
 
-            <StreamViewer/>
             <ArduinoSensorData/>
             <RealTimeChart/>
 
