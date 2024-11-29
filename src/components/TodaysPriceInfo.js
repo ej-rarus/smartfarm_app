@@ -122,6 +122,7 @@ export default function TodaysPriceInfo() {
             {priceData
               .filter(item => item.countyname !== "평균" && item.countyname !== "평년")
               .slice(-5)
+              .reverse()
               .map((item, index) => (
                 <div key={index} className="price-item">
                   <div className="price-header">
@@ -138,53 +139,72 @@ export default function TodaysPriceInfo() {
           
           <div className="price-section">
             <h4>평균 가격 추이</h4>
-            {priceData
-              .filter(item => item.countyname === "평균")
-              .slice(-5)
-              .length > 0 && (
-                <div className="chart-container">
-                  <Line
-                    data={{
-                      labels: priceData
-                        .filter(item => item.countyname === "평균")
-                        .slice(-5)
-                        .map(item => `${item.yyyy}/${item.regday}`),
-                      datasets: [
-                        {
-                          label: '평균 가격',
-                          data: priceData
-                            .filter(item => item.countyname === "평균")
-                            .slice(-5)
-                            .map(item => item.price),
-                          borderColor: 'rgb(75, 192, 192)',
-                          tension: 0.1,
-                          fill: false
-                        }
-                      ]
-                    }}
-                    options={{
-                      responsive: true,
-                      plugins: {
-                        legend: {
-                          position: 'top',
+            {priceData && (
+              <div className="chart-container">
+                <Line
+                  data={{
+                    labels: priceData
+                      .filter(item => item.countyname === "평균")
+                      .slice(-5)
+                      .map(item => {
+                        const date = new Date(item.regday);
+                        return `${date.getMonth() + 1}/${date.getDate()}`;
+                      }),
+                    datasets: [
+                      {
+                        label: '평균 가격',
+                        data: priceData
+                          .filter(item => item.countyname === "평균")
+                          .slice(-5)
+                          .map(item => parseInt(item.price.replace(/,/g, ''))),
+                        borderColor: 'rgb(75, 192, 192)',
+                        segment: {
+                          borderColor: ctx => {
+                            const prev = ctx.p0.parsed.y;
+                            const current = ctx.p1.parsed.y;
+                            return prev > current ? 'rgb(59, 130, 246)' : // 파란색 (가격 하락)
+                                   prev < current ? 'rgb(239, 68, 68)' : // 빨간색 (가격 상승)
+                                   'rgb(75, 192, 192)'; // 기본색 (변동 없음)
+                          }
                         },
-                        title: {
-                          display: false
-                        }
+                        tension: 0.1,
+                        fill: false,
+                        borderWidth: 2
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false
                       },
-                      scales: {
-                        y: {
-                          beginAtZero: false,
-                          ticks: {
-                            callback: function(value) {
-                              return value.toLocaleString() + '원';
-                            }
+                      tooltip: {
+                        callbacks: {
+                          label: function(context) {
+                            const value = context.parsed.y;
+                            const prev = context.dataset.data[context.dataIndex - 1];
+                            const diff = prev ? value - prev : 0;
+                            const sign = diff > 0 ? '▲' : diff < 0 ? '▼' : '';
+                            return `${value.toLocaleString()}원 ${sign}`;
                           }
                         }
                       }
-                    }}
-                  />
-                </div>
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: false,
+                        ticks: {
+                          callback: function(value) {
+                            return value.toLocaleString() + '원';
+                          }
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
             )}
           </div>
         </div>
