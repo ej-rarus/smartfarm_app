@@ -67,60 +67,57 @@ function Diary() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">Diary</h1>
-      <hr style={{
-        border: "none",
-        height: "2px",
-        backgroundColor: "gray",
-        width: "13rem",
-        marginTop: "0.5rem",
-      }}/>
-      <p className="page-content">영농일지입니다.</p>
+    <div className="diary-container">
+      <div className="diary-header">
+        <h1>영농일지</h1>
+        <p>나의 농사 기록을 남겨보세요</p>
+      </div>
 
-      <div className="post-list-container">
+      <div className="diary-content">
         <button
-          className="std-btn"
+          className="write-button"
           onClick={() => navigate("/diary/new")}
         >
-          글쓰기
+          <i className="fas fa-pen"></i> 새 글 작성
         </button>
 
-        {[...data]
-          .sort((a, b) => new Date(b.create_date) - new Date(a.create_date))
-          .map((item, index) => {
-            const formattedDate = new Date(item.create_date).toLocaleDateString("en-CA");
-            
-            if (data.length === index + 1) {
+        <div className="diary-list">
+          {[...data]
+            .sort((a, b) => new Date(b.create_date) - new Date(a.create_date))
+            .map((item, index) => {
+              const formattedDate = new Date(item.create_date).toLocaleDateString("ko-KR", {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+              
               return (
                 <div 
-                  ref={lastPostElementRef}
-                  className="post-card" 
+                  ref={index === data.length - 1 ? lastPostElementRef : null}
+                  className="diary-card" 
                   key={item.post_id} 
                   onClick={() => navigate(`/diary/${item.post_id}`)}
                 >
-                  <div className="post-id">{item.post_id}</div>
-                  <div className="post-title">{item.post_title}</div>
-                  <div className="post-author">{item.author}</div>
-                  <div className="post-create-date">{formattedDate}</div>
+                  <div className="diary-card-header">
+                    <span className="diary-number">#{item.post_id}</span>
+                    <span className="diary-date">{formattedDate}</span>
+                  </div>
+                  <h3 className="diary-title">{item.post_title}</h3>
+                  <div className="diary-footer">
+                    <span className="diary-author">
+                      <i className="fas fa-user"></i> {item.author}
+                    </span>
+                  </div>
                 </div>
               );
-            } else {
-              return (
-                <div 
-                  className="post-card" 
-                  key={item.post_id} 
-                  onClick={() => navigate(`/diary/${item.post_id}`)}
-                >
-                  <div className="post-id">{item.post_id}</div>
-                  <div className="post-title">{item.post_title}</div>
-                  <div className="post-author">{item.author}</div>
-                  <div className="post-create-date">{formattedDate}</div>
-                </div>
-              );
-            }
-          })}
-        {loading && <div>Loading...</div>}
+            })}
+        </div>
+        
+        {loading && (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+          </div>
+        )}
       </div>
     </div>
   );

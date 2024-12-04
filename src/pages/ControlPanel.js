@@ -1,10 +1,9 @@
 import '../App.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
 import StdControlBtn from '../components/StdControlBtn';
 
 function ControlPanel() {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
   const [responses, setResponses] = useState([]);
@@ -55,7 +54,7 @@ function ControlPanel() {
     amt: 21,
   },]);
 
-  const connectWebSocket = () => {
+  const connectWebSocket = useCallback(() => {
     try {
       ws.current = new WebSocket('ws://3.39.126.121:3000');
 
@@ -94,10 +93,11 @@ function ControlPanel() {
       setError('웹소켓 연결에 실패했습니다.');
       setIsConnected(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    connectWebSocket();
+    const connect = () => connectWebSocket();
+    connect();
 
     return () => {
       if (ws.current) {
@@ -107,7 +107,7 @@ function ControlPanel() {
         clearTimeout(reconnectTimeout.current);
       }
     };
-  }, []);
+  }, [connectWebSocket]);
 
   useEffect(() => {
     if (responseListRef.current) {
@@ -138,7 +138,7 @@ function ControlPanel() {
         }}
       />
       
-      <StdControlBtn/>
+      <StdControlBtn ws={ws} />
 
       <div className="websocket-container">
         <div className="connection-status">

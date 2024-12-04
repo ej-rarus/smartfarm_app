@@ -1,158 +1,93 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import '../App.css';
+import React, { useState, useEffect } from 'react';
 
-function StdControlBtn() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [error, setError] = useState(null);
+function StdControlBtn({ ws }) {
   const [deviceStates, setDeviceStates] = useState({
-    light: false,
-    fan: false,
-    pump: false
+    device1: false,
+    device2: false,
+    device3: false,
+    device4: false
   });
-  const ws = useRef(null);
-  const reconnectTimeout = useRef(null);
 
-  const connectWebSocket = useCallback(() => {
-    try {
-      ws.current = new WebSocket('ws://3.39.126.121:3000');
-
-      ws.current.onopen = () => {
-        console.log('웹소켓 연결 성공');
-        setIsConnected(true);
-        setError(null);
-        if (reconnectTimeout.current) {
-          clearTimeout(reconnectTimeout.current);
-          reconnectTimeout.current = null;
-        }
-      };
-
-      ws.current.onerror = (error) => {
-        console.error('웹소켓 에러:', error);
-        setError('웹소켓 연결 중 오류가 발생했습니다.');
-        setIsConnected(false);
-      };
-
-      ws.current.onclose = () => {
-        console.log('웹소켓 연결 종료');
-        setIsConnected(false);
-        reconnectTimeout.current = setTimeout(() => {
-          console.log('웹소켓 재연결 시도...');
-          connectWebSocket();
-        }, 3000);
-      };
-    } catch (err) {
-      console.error('웹소켓 연결 실패:', err);
-      setError('웹소켓 연결에 실패했습니다.');
-      setIsConnected(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    connectWebSocket();
-
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-      if (reconnectTimeout.current) {
-        clearTimeout(reconnectTimeout.current);
-      }
-    };
-  }, [connectWebSocket]);
-
-  const handleControl = (device, action) => {
+  const toggleDevice = (device) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(`${device}_${action}`);
+      // 현재 상태의 반대값을 계산
+      const newState = !deviceStates[device];
+      
+      // 디바이스별 명령어 설정
+      let command = '';
+      switch(device) {
+        case 'device1':
+          command = newState ? 'fan_on' : 'fan_off';
+          break;
+        case 'device2':
+          command = newState ? 'light_on' : 'light_off';
+          break;
+        case 'device3':
+          command = newState ? 'water_on' : 'water_off';
+          break;
+        case 'device4':
+          command = newState ? 'window_on' : 'window_off';
+          break;
+        default:
+          break;
+      }
+
+      // 웹소켓으로 명령어 전송
+      ws.current.send(command);
+      
+      // UI 상태 업데이트
       setDeviceStates(prev => ({
         ...prev,
-        [device]: action === 'on'
+        [device]: newState
       }));
     } else {
-      setError('웹소켓이 연결되어 있지 않습니다. 잠시 후 다시 시도해주세요.');
+      console.error('WebSocket is not connected');
+      // 필요하다면 여기에 에러 처리 로직 추가
     }
   };
 
+  // 웹소켓 메시지 수신 처리
+  useEffect(() => {
+    if (ws.current) {
+      const wsInstance = ws.current;  // ref 값을 지역 변수에 저장
+      const handleMessage = (event) => {
+        const response = event.data;
+        // 서버 응답에 따라 상태 업데이트
+        if (response.includes('fan_on')) setDeviceStates(prev => ({ ...prev, device1: true }));
+        if (response.includes('fan_off')) setDeviceStates(prev => ({ ...prev, device1: false }));
+        if (response.includes('light_on')) setDeviceStates(prev => ({ ...prev, device2: true }));
+        if (response.includes('light_off')) setDeviceStates(prev => ({ ...prev, device2: false }));
+        if (response.includes('water_on')) setDeviceStates(prev => ({ ...prev, device3: true }));
+        if (response.includes('water_off')) setDeviceStates(prev => ({ ...prev, device3: false }));
+        if (response.includes('window_on')) setDeviceStates(prev => ({ ...prev, device4: true }));
+        if (response.includes('window_off')) setDeviceStates(prev => ({ ...prev, device4: false }));
+      };
+
+      wsInstance.addEventListener('message', handleMessage);
+      return () => wsInstance.removeEventListener('message', handleMessage);
+    }
+  }, [ws]);
+
   return (
     <div className="control-btn-container">
-      <div className="connection-status">
-        연결 상태: {isConnected ? 
-          <span className="connected">연결됨</span> : 
-          <span className="disconnected">연결 끊김</span>
-        }
-      </div>
-      
       <div className="control-sets">
-        <div className="control-set">
-          <span className="device-label">조명</span>
-          <div className="btn-group">
-            <button 
-              className="control-btn on-btn"
-              onClick={() => handleControl('light', 'on')}
-              disabled={!isConnected}
-            >
-              켜기
-            </button>
-            <button 
-              className="control-btn off-btn"
-              onClick={() => handleControl('light', 'off')}
-              disabled={!isConnected}
-            >
-              끄기
-            </button>
-            <span className={`status-indicator ${deviceStates.light ? 'on' : 'off'}`}>
-              {deviceStates.light ? '켜짐' : '꺼짐'}
+        {Object.entries(deviceStates).map(([device, isOn]) => (
+          <div className="control-set" key={device}>
+            <span className="device-label">
+              {device === 'device1' && '환풍기'}
+              {device === 'device2' && '조명'}
+              {device === 'device3' && '급수'}
+              {device === 'device4' && '창문'}
             </span>
+            <button
+              className={`toggle-btn ${isOn ? 'on' : 'off'}`}
+              onClick={() => toggleDevice(device)}
+            >
+              {isOn ? 'ON' : 'OFF'}
+            </button>
           </div>
-        </div>
-
-        <div className="control-set">
-          <span className="device-label">팬</span>
-          <div className="btn-group">
-            <button 
-              className="control-btn on-btn"
-              onClick={() => handleControl('fan', 'on')}
-              disabled={!isConnected}
-            >
-              켜기
-            </button>
-            <button 
-              className="control-btn off-btn"
-              onClick={() => handleControl('fan', 'off')}
-              disabled={!isConnected}
-            >
-              끄기
-            </button>
-            <span className={`status-indicator ${deviceStates.fan ? 'on' : 'off'}`}>
-              {deviceStates.fan ? '켜짐' : '꺼짐'}
-            </span>
-          </div>
-        </div>
-
-        <div className="control-set">
-          <span className="device-label">펌프</span>
-          <div className="btn-group">
-            <button 
-              className="control-btn on-btn"
-              onClick={() => handleControl('pump', 'on')}
-              disabled={!isConnected}
-            >
-              켜기
-            </button>
-            <button 
-              className="control-btn off-btn"
-              onClick={() => handleControl('pump', 'off')}
-              disabled={!isConnected}
-            >
-              끄기
-            </button>
-            <span className={`status-indicator ${deviceStates.pump ? 'on' : 'off'}`}>
-              {deviceStates.pump ? '켜짐' : '꺼짐'}
-            </span>
-          </div>
-        </div>
+        ))}
       </div>
-
-      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }
