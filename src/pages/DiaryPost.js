@@ -86,7 +86,20 @@ function DiaryPost() {
         <div className="not-found">게시글을 찾을 수 없습니다.</div>
       ) : (
         <div className="instagram-post-content">
+          <h1 className="post-title">{post.post_title}</h1>
+          <div className="post-info">
+                <span className="post-date">
+                  {new Date(post.create_date).toLocaleDateString("ko-KR", {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
+              </div>
           <div className="post-author-info">
+            
             <div className="author-avatar">
               <i className="fas fa-user-circle"></i>
             </div>
@@ -96,8 +109,8 @@ function DiaryPost() {
             </div>
           </div>
 
-          {post.image && post.image !== 'null' && (
-            <div className="post-image">
+          <div className="post-image">
+            {post.image && post.image !== 'null' ? (
               <img 
                 src={`${process.env.REACT_APP_API_URL}${post.image}`}
                 alt={post.post_title} 
@@ -105,26 +118,39 @@ function DiaryPost() {
                 onError={(e) => {
                   console.error('이미지 로딩 오류:', e);
                   console.log('실패한 이미지 URL:', e.target.src);
-                  e.target.parentElement.style.display = 'none'; // div.post-image 전체를 숨김
+                  e.target.style.display = 'none';
                 }}
               />
-            </div>
-          )}
+            ) : (
+              <div className="no-image-placeholder">
+                <i className="fas fa-image"></i>
+                <p>이미지가 없습니다</p>
+              </div>
+            )}
+          </div>
 
           <div className="post-details">
-            <h2 className="post-title">{post.post_title}</h2>
-            <p className="post-content">{post.post_content}</p>
+            <div className="diary-post-header">
+              
+              
+            </div>
             
-            <div className="post-meta">
-              <span className="post-date">
-                {new Date(post.create_date).toLocaleDateString("ko-KR", {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </span>
+            <div className="diary-post-content">
+              {post.post_content}
+            </div>
+
+            <div className="diary-post-buttons">
+              <button className="back-btn" onClick={() => navigate('/diary')}>
+                목록으로
+              </button>
+              <div className="action-buttons">
+                <button className="edit-btn" onClick={() => navigate(`/diary/edit/${id}`)}>
+                  수정
+                </button>
+                <button className="delete-btn" onClick={handleDelete}>
+                  삭제
+                </button>
+              </div>
             </div>
           </div>
         </div>

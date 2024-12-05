@@ -998,7 +998,7 @@ button {
 }
 
 .chart-container {
-  height: 300px;  /* 차트 높이 고정 */
+  height: 150px;  /* 차트 높이 고정 */
   padding: 20px;
   background: white;
   border-radius: 8px;
@@ -1350,117 +1350,15 @@ input:focus, textarea:focus, select:focus {
   color: #999;
 }
 
-.instagram-post-container {
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  min-height: 100vh;
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 그리드로 변경 */
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.instagram-post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #dbdbdb;
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 1000;
-}
-
-.instagram-post-header h1 {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.back-btn, .edit-btn, .delete-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #262626;
-}
-
-.delete-btn {
-  color: #ed4956;
-}
-
-.post-author-info {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  gap: 1rem;
-}
-
-.author-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: #8e8e8e;
-}
-
-.author-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.author-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.post-category {
-  color: #8e8e8e;
-  font-size: 0.8rem;
-}
-
-.post-image {
-  width: 100%;
-  max-height: 600px;
-  overflow: hidden;
-}
-
-.post-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.post-details {
-  padding: 1rem;
-}
-
-.post-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.post-content {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #262626;
-  white-space: pre-wrap;
-}
-
-.post-meta {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #efefef;
-}
-
-.post-date {
-  color: #8e8e8e;
-  font-size: 0.8rem;
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr; /* 모바일에서는 1열로 */
+    }
 }
