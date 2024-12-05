@@ -29,7 +29,11 @@ function Diary() {
             }
           }
         );
-        const sortedPosts = response.data.sort((a, b) => new Date(b.create_date) - new Date(a.create_date));
+        
+        // 서버 응답 구조에 맞게 데이터 처리
+        const posts = response.data.data || [];
+        const sortedPosts = posts.sort((a, b) => new Date(b.create_date) - new Date(a.create_date));
+        
         setAllPosts(sortedPosts);
         const initialPosts = sortedPosts.slice(0, POSTS_PER_PAGE);
         setData(initialPosts);
@@ -38,10 +42,13 @@ function Diary() {
       } catch (err) {
         setError(err.message);
         setLoading(false);
+        if (err.response?.status === 401) {
+          navigate('/login');
+        }
       }
     };
     fetchInitialData();
-  }, []);
+  }, [navigate]);
 
   // 페이지 변경시 데이터 추가
   useEffect(() => {

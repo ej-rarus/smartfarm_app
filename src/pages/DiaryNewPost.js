@@ -35,12 +35,12 @@ function DiaryNewPost() {
       formData.append('post_title', title);
       formData.append('post_category', category);
       formData.append('author', author);
-      formData.append('content', content);
+      formData.append('post_content', content);
       if (image) {
         formData.append('image', image);
       }
 
-      await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/diary`,
         formData,
         {
@@ -50,10 +50,18 @@ function DiaryNewPost() {
           }
         }
       );
-      navigate("/diary");
+
+      if (response.data.status === 200) {
+        navigate("/diary");
+      } else {
+        alert(response.data.message || "게시글 작성 중 오류가 발생했습니다.");
+      }
     } catch (err) {
-      console.error(err);
-      alert("게시글 작성 중 오류가 발생했습니다.");
+      console.error('Error details:', err.response?.data);
+      alert(err.response?.data?.message || "게시글 작성 중 오류가 발생했습니다.");
+      if (err.response?.status === 401) {
+        navigate('/login');
+      }
     }
   };
 

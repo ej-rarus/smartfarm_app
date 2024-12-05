@@ -22,15 +22,28 @@ function DiaryPost() {
             }
           }
         );
-        setPost(response.data);
+
+        console.log('전체 서버 응답:', response);
+        console.log('이미지 경로:', response.data.data.image);
+
+        if (response.data.status === 200 && response.data.data) {
+          setPost(response.data.data);
+        } else {
+          setError(response.data.message || '게시글을 불러올 수 없습니다.');
+        }
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        console.error('Error fetching post:', err);
+        setError(err.response?.data?.message || '게시글을 불러올 수 없습니다.');
         setLoading(false);
+        if (err.response?.status === 401) {
+          navigate('/login');
+        }
       }
     };
+
     fetchPost();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
@@ -51,57 +64,71 @@ function DiaryPost() {
     }
   };
 
-  if (loading) return <div className="loading-spinner">Loading...</div>;
-  if (error) return <div className="error-message">Error: {error}</div>;
-  if (!post) return <div className="not-found">게시글을 찾을 수 없습니다.</div>;
+  const getCategoryName = (categoryCode) => {
+    const categories = {
+      '0001': '공지사항',
+      '0002': '농업',
+      '0003': '기술',
+      '0004': '일상',
+      '0005': '기타'
+    };
+    return categories[categoryCode] || '기타';
+  };
 
   return (
-    <div className="diary-post-container">
-      <div className="diary-post-header">
-        <h1>{post.post_title}</h1>
-        <div className="post-info">
-          <span className="author">
-            <i className="fas fa-user"></i> {post.author}
-          </span>
-          <span className="date">
-            <i className="fas fa-calendar"></i> 
-            {new Date(post.create_date).toLocaleDateString("ko-KR", {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}
-          </span>
-        </div>
-      </div>
+    <div className="instagram-post-container">
+      
+      {loading ? (
+        <div className="loading-spinner">Loading...</div>
+      ) : error ? (
+        <div className="error-message">Error: {error}</div>
+      ) : !post ? (
+        <div className="not-found">게시글을 찾을 수 없습니다.</div>
+      ) : (
+        <div className="instagram-post-content">
+          <div className="post-author-info">
+            <div className="author-avatar">
+              <i className="fas fa-user-circle"></i>
+            </div>
+            <div className="author-details">
+              <span className="author-name">{post.author}</span>
+              <span className="post-category">{getCategoryName(post.post_category)}</span>
+            </div>
+          </div>
 
-      <div className="diary-post-content">
-        {post.post_content}
-      </div>
+          {post.image && post.image !== 'null' && (
+            <div className="post-image">
+              <img 
+                src={`${process.env.REACT_APP_API_URL}${post.image}`}
+                alt={post.post_title} 
+                crossOrigin="anonymous"
+                onError={(e) => {
+                  console.error('이미지 로딩 오류:', e);
+                  console.log('실패한 이미지 URL:', e.target.src);
+                  e.target.parentElement.style.display = 'none'; // div.post-image 전체를 숨김
+                }}
+              />
+            </div>
+          )}
 
-      <div className="diary-post-buttons">
-        <button 
-          className="back-btn"
-          onClick={() => navigate('/diary')}
-        >
-          목록으로
-        </button>
-        <div className="action-buttons">
-          <button 
-            className="edit-btn"
-            onClick={() => navigate(`/diary/edit/${id}`)}
-          >
-            수정
-          </button>
-          <button 
-            className="delete-btn"
-            onClick={handleDelete}
-          >
-            삭제
-          </button>
+          <div className="post-details">
+            <h2 className="post-title">{post.post_title}</h2>
+            <p className="post-content">{post.post_content}</p>
+            
+            <div className="post-meta">
+              <span className="post-date">
+                {new Date(post.create_date).toLocaleDateString("ko-KR", {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
