@@ -1,12 +1,46 @@
 import React, { useState, useEffect } from 'react';
 
 function StdControlBtn({ ws }) {
-  const [deviceStates, setDeviceStates] = useState({
-    device1: false,
-    device2: false,
-    device3: false,
-    device4: false
+  const [deviceStates, setDeviceStates] = useState(() => {
+    const savedStates = localStorage.getItem('deviceStates');
+    return savedStates ? JSON.parse(savedStates) : {
+      device1: false,
+      device2: false,
+      device3: false,
+      device4: false
+    };
   });
+
+  useEffect(() => {
+    localStorage.setItem('deviceStates', JSON.stringify(deviceStates));
+  }, [deviceStates]);
+
+  useEffect(() => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      Object.entries(deviceStates).forEach(([device, isOn]) => {
+        let command = '';
+        switch(device) {
+          case 'device1':
+            command = isOn ? 'fan_on' : 'fan_off';
+            break;
+          case 'device2':
+            command = isOn ? 'light_on' : 'light_off';
+            break;
+          case 'device3':
+            command = isOn ? 'water_on' : 'water_off';
+            break;
+          case 'device4':
+            command = isOn ? 'window_on' : 'window_off';
+            break;
+          default:
+            break;
+        }
+        if (command) {
+          ws.current.send(command);
+        }
+      });
+    }
+  }, [ws, deviceStates]);
 
   const toggleDevice = (device) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
@@ -40,9 +74,6 @@ function StdControlBtn({ ws }) {
         ...prev,
         [device]: newState
       }));
-    } else {
-      console.error('WebSocket is not connected');
-      // 필요하다면 여기에 에러 처리 로직 추가
     }
   };
 

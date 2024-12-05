@@ -44,9 +44,8 @@ export default function DiaryEditPost() {
     e.preventDefault();
     try {
       const user = getCurrentUser();
-      const token = localStorage.getItem(process.env.REACT_APP_AUTH_TOKEN_KEY);
       
-      if (!token) {
+      if (!user?.token) {
         alert("로그인이 필요합니다.");
         navigate("/login");
         return;
@@ -62,7 +61,7 @@ export default function DiaryEditPost() {
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${user.token}`,
             'Content-Type': 'application/json'
           }
         }
