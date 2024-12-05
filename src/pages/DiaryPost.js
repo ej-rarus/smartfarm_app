@@ -76,8 +76,7 @@ function DiaryPost() {
   };
 
   return (
-    <div className="instagram-post-container">
-      
+    <div className="insta-post-container">
       {loading ? (
         <div className="loading-spinner">Loading...</div>
       ) : error ? (
@@ -85,31 +84,31 @@ function DiaryPost() {
       ) : !post ? (
         <div className="not-found">게시글을 찾을 수 없습니다.</div>
       ) : (
-        <div className="instagram-post-content">
-          <h1 className="post-title">{post.post_title}</h1>
-          <div className="post-info">
-                <span className="post-date">
-                  {new Date(post.create_date).toLocaleDateString("ko-KR", {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </span>
-              </div>
-          <div className="post-author-info">
-            
-            <div className="author-avatar">
-              <i className="fas fa-user-circle"></i>
-            </div>
-            <div className="author-details">
-              <span className="author-name">{post.author}</span>
-              <span className="post-category">{getCategoryName(post.post_category)}</span>
+        <>
+          <div className="insta-post-header">
+            <h1 className="insta-post-title">{post.post_title}</h1>
+            <div className="insta-post-info">
+              <span>{new Date(post.create_date).toLocaleDateString("ko-KR", {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}</span>
             </div>
           </div>
 
-          <div className="post-image">
+          <div className="insta-author-section">
+            <div className="insta-author-avatar">
+              <i className="fas fa-user-circle"></i>
+            </div>
+            <div className="insta-author-details">
+              <span className="insta-author-name">{post.author}</span>
+              <span className="insta-category-tag">{getCategoryName(post.post_category)}</span>
+            </div>
+          </div>
+
+          <div className="insta-post-image">
             {post.image && post.image !== 'null' ? (
               <img 
                 src={`${process.env.REACT_APP_API_URL}${post.image}`}
@@ -117,43 +116,35 @@ function DiaryPost() {
                 crossOrigin="anonymous"
                 onError={(e) => {
                   console.error('이미지 로딩 오류:', e);
-                  console.log('실패한 이미지 URL:', e.target.src);
                   e.target.style.display = 'none';
                 }}
               />
             ) : (
-              <div className="no-image-placeholder">
+              <div className="insta-no-image">
                 <i className="fas fa-image"></i>
                 <p>이미지가 없습니다</p>
               </div>
             )}
           </div>
 
-          <div className="post-details">
-            <div className="diary-post-header">
-              
-              
-            </div>
-            
-            <div className="diary-post-content">
-              {post.post_content}
-            </div>
+          <div className="insta-post-content">
+            {post.post_content}
+          </div>
 
-            <div className="diary-post-buttons">
-              <button className="back-btn" onClick={() => navigate('/diary')}>
-                목록으로
+          <div className="insta-post-actions">
+            <button className="insta-back-btn" onClick={() => navigate('/diary')}>
+              <i className="fas fa-arrow-left"></i> 목록으로
+            </button>
+            <div className="insta-action-btns">
+              <button className="insta-edit-btn" onClick={() => navigate(`/diary/edit/${id}`)}>
+                수정
               </button>
-              <div className="action-buttons">
-                <button className="edit-btn" onClick={() => navigate(`/diary/edit/${id}`)}>
-                  수정
-                </button>
-                <button className="delete-btn" onClick={handleDelete}>
-                  삭제
-                </button>
-              </div>
+              <button className="insta-delete-btn" onClick={handleDelete}>
+                삭제
+              </button>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
