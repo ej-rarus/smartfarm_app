@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../utils/auth";
+import LowerNav from "../components/LowerNav";
 
 function Diary() {
   const [data, setData] = useState([]);
@@ -119,7 +120,7 @@ function Diary() {
               );
             })}
         </div>
-        
+        <LowerNav />
         {loading && (
           <div className="loading-spinner">
             <div className="spinner"></div>
