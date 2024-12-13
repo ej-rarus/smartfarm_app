@@ -84,8 +84,16 @@ function AppContent() {
             <MyPage />
           </ProtectedRoute>
         } />
-        <Route path="/mycrop" element={<MyCrop />} />
-        <Route path="/mycrop/new" element={<MyCropNew />} />
+        <Route path="/mycrop" element={
+          <ProtectedRoute>
+            <MyCrop />
+          </ProtectedRoute>
+        } />
+        <Route path="/mycrop/new" element={
+          <ProtectedRoute>
+            <MyCropNew />
+          </ProtectedRoute>
+        } />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

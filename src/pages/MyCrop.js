@@ -1,114 +1,130 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated } from '../utils/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLeaf } from "@fortawesome/free-solid-svg-icons";
+import { faLeaf, faPlus, faEdit, faTrash, faSeedling } from "@fortawesome/free-solid-svg-icons";
+import LowerNav from "../components/LowerNav";
 
 function MyCrop() {
-  const [crops, setCrops] = useState([]);
-  const [allCrops, setAllCrops] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const observer = useRef();
   const navigate = useNavigate();
-  const ITEMS_PER_PAGE = 5;
+  const [userData] = useState({
+    username: "농부킴",
+    profileImage: null
+  });
 
-//   useEffect(() => {
-//     if (!isAuthenticated()) {
-//       navigate('/login', { state: { from: { pathname: '/mycrop' } } });
-//       return;
-//     }
+  // 데모 작물 데이터
+  const [crops, setCrops] = useState([
+    {
+      id: 1,
+      nickname: "귀여운 토마토",
+      variety: "방울토마토",
+      plantingDate: "2024-01-15",
+      expectedHarvestDate: "2024-04-15",
+    },
+    {
+      id: 2,
+      nickname: "상추는 상추상추",
+      variety: "청상추",
+      plantingDate: "2024-02-01",
+      expectedHarvestDate: "2024-03-15",
+    },
+    {
+      id: 3,
+      nickname: "매운맛 고추",
+      variety: "청양고추",
+      plantingDate: "2024-01-20",
+      expectedHarvestDate: "2024-05-20",
+    }
+  ]);
 
-//     const fetchInitialData = async () => {
-//       try {
-//         setLoading(true);
-//         const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/crops`);
-//         const sortedCrops = response.data.sort((a, b) => new Date(b.plant_date) - new Date(a.plant_date));
-//         setAllCrops(sortedCrops);
-//         const initialCrops = sortedCrops.slice(0, ITEMS_PER_PAGE);
-//         setCrops(initialCrops);
-//         setHasMore(sortedCrops.length > ITEMS_PER_PAGE);
-//         setLoading(false);
-//       } catch (err) {
-//         setError(err.message);
-//         setLoading(false);
-//       }
-//     };
-//     fetchInitialData();
-//   }, [navigate]);
+  const calculateGrowthPercentage = (plantingDate, expectedHarvestDate) => {
+    const start = new Date(plantingDate).getTime();
+    const end = new Date(expectedHarvestDate).getTime();
+    const current = new Date().getTime();
+    const growth = ((current - start) / (end - start)) * 100;
+    return Math.min(Math.max(growth, 0), 100);
+  };
 
-  useEffect(() => {
-    if (page === 1) return;
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = page * ITEMS_PER_PAGE;
-    const newCrops = allCrops.slice(startIndex, endIndex);
-    setCrops(prev => [...prev, ...newCrops]);
-    setHasMore(endIndex < allCrops.length);
-  }, [page, allCrops]);
+  const calculateDaysFromPlanting = (plantingDate) => {
+    const start = new Date(plantingDate).getTime();
+    const current = new Date().getTime();
+    return Math.floor((current - start) / (1000 * 60 * 60 * 24));
+  };
 
-  const lastCropElementRef = useCallback(node => {
-    if (loading) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
-        setPage(prevPage => prevPage + 1);
-      }
-    });
-    if (node) observer.current.observe(node);
-  }, [loading, hasMore]);
+  const handleAddCrop = () => {
+    navigate("/mycrop/new");
+  };
 
-  if (error) return <p>Error: {error}</p>;
+  const handleEditCrop = (id) => {
+    alert(`작물 ID ${id} 수정 기능은 아직 준비중입니다!`);
+  };
+
+  const handleDeleteCrop = (id) => {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      setCrops(crops.filter(crop => crop.id !== id));
+    }
+  };
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">내 작물 관리</h1>
-      <hr style={{
-        border: "none",
-        height: "2px",
-        backgroundColor: "gray",
-        width: "13rem",
-        marginTop: "0.5rem",
-      }}/>
-      <p className="page-content">작물 정보를 등록하고 관리하세요.</p>
-
-      <div className="crop-list-container">
-        <button
-          className="std-btn"
-          onClick={() => navigate("/mycrop/new")}
-        >
-          작물 등록
+    <div className="my-crop-container">
+      <div className="my-crop-header">
+        <div className="my-crop-profile">
+          <div className="my-crop-profile-image">
+            {userData?.profileImage ? (
+              <img src={userData.profileImage} alt="프로필" />
+            ) : (
+              <FontAwesomeIcon icon={faLeaf} size="2x" />
+            )}
+          </div>
+          <h2>{userData?.username}님의 농장</h2>
+        </div>
+        <button className="my-crop-add-button" onClick={handleAddCrop}>
+          <FontAwesomeIcon icon={faPlus} /> 작물 추가
         </button>
+      </div>
 
-        {crops.map((crop, index) => {
-          const plantDate = new Date(crop.plant_date).toLocaleDateString("ko-KR");
-          const harvestDate = crop.harvest_date ? new Date(crop.harvest_date).toLocaleDateString("ko-KR") : "수확 예정";
-          
-          return (
-            <div 
-              ref={crops.length === index + 1 ? lastCropElementRef : null}
-              className="crop-card" 
-              key={crop.crop_id} 
-              onClick={() => navigate(`/mycrop/${crop.crop_id}`)}
-            >
-              <div className="crop-icon">
-                <FontAwesomeIcon icon={faLeaf} />
+      <div className="my-crop-list">
+        {crops.map(crop => (
+          <div key={crop.id} className="my-crop-card">
+            <div className="my-crop-info">
+              <div className="my-crop-title">
+                <FontAwesomeIcon icon={faSeedling} className="crop-icon" />
+                <h3>{crop.nickname}</h3>
               </div>
-              <div className="crop-info">
-                <div className="crop-name">{crop.crop_name}</div>
-                <div className="crop-variety">{crop.variety}</div>
-                <div className="crop-status">{crop.status}</div>
-                <div className="crop-dates">
-                  <span>심은 날: {plantDate}</span>
-                  <span>수확 예정: {harvestDate}</span>
-                </div>
-              </div>
+              <p className="my-crop-variety">{crop.variety}</p>
+              <p className="my-crop-date">
+                파종일로부터 {calculateDaysFromPlanting(crop.plantingDate)}일
+              </p>
+              <p className="my-crop-description">{crop.description}</p>
             </div>
-          );
-        })}
-        {loading && <div>Loading...</div>}
+            
+            <div className="my-crop-growth-container">
+              <div 
+                className="my-crop-growth-bar"
+                style={{ 
+                  width: `${calculateGrowthPercentage(crop.plantingDate, crop.expectedHarvestDate)}%`
+                }}
+              />
+              <span className="my-crop-growth-percentage">
+                {Math.round(calculateGrowthPercentage(crop.plantingDate, crop.expectedHarvestDate))}%
+              </span>
+            </div>
+
+            <div className="my-crop-actions">
+              <button 
+                className="my-crop-edit-btn"
+                onClick={() => handleEditCrop(crop.id)}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </button>
+              <button 
+                className="my-crop-delete-btn"
+                onClick={() => handleDeleteCrop(crop.id)}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1014,27 +1014,36 @@ button {
 }
 
 .chatbot-button {
-  width: 60px;
-  height: 60px;
-  border-radius: 30px;
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  width: 5rem;
+  height:5rem;
+  padding: 0.5rem;
+  border-radius: 55px;
   background-color: var(--point-color3);
   color: white;
   border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  
-  /* 가운데 정렬을 위한 속성 추가 */
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 0; /* 기존 패딩 제거 */
+  justify-content: center;
+  text-align: center;
+  z-index: 999;
+  transition: transform 0.2s ease;
 }
 
 .chatbot-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
+/* iOS 안전영역 대응 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .chatbot-button {
+    bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
 
 .chatbot-close-button {
   background-color: var(--point-color1);
@@ -1513,97 +1522,202 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
-/* LowerNav 스타일 */
-.lower-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #dbdbdb;
-    z-index: 1000;
-    padding-bottom: env(safe-area-inset-bottom);
+/* MyCrop 스타일 */
+.my-crop-container {
+    padding: 20px;
+    padding-bottom: 80px;
+    background: #f8f9fa;
+    min-height: 100vh;
 }
 
-.nav-item {
+.my-crop-header {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 8px;
-    width: 25%;
+    margin-bottom: 24px;
 }
 
-.nav-item i {
-    font-size: 1.5rem;
-    color: #262626;
-    margin-bottom: 4px;
+.my-crop-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.nav-item span {
-    font-size: 0.7rem;
-    color: #262626;
-}
-
-.nav-item i.active {
-    color: var(--point-color3);
-}
-
-.nav-item span.active {
-    color: var(--point-color3);
-}
-
-/* 챗봇 버튼 스타일 */
-.chatbot-button {
-    position: fixed;
-    right: 20px;
-    bottom: 90px;
+.my-crop-profile-image {
     width: 60px;
     height: 60px;
-    border-radius: 30px;
-    background-color: var(--point-color3);
-    color: white;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 999;
+    border-radius: 50%;
+    background: var(--point-color5);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--point-color3);
+    font-size: 24px;
+}
+
+.my-crop-profile-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.my-crop-add-button {
+    padding: 8px 16px;
+    background: var(--point-color3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 0.9rem;
-    font-weight: bold;
+}
+
+.my-crop-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.my-crop-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+}
+
+.my-crop-card:hover {
+    transform: translateY(-2px);
+}
+
+.my-crop-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.my-crop-title h3 {
+    margin: 0;
+    color: var(--main-color);
+    font-size: 1.1rem;
+}
+
+.crop-icon {
+    color: var(--point-color3);
+}
+
+.my-crop-variety {
+    color: var(--point-color3);
+    font-size: 0.9rem;
+    margin: 4px 0;
+}
+
+.my-crop-date {
+    color: #666;
+    font-size: 0.8rem;
+    margin: 4px 0;
+}
+
+.my-crop-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 8px 0;
+}
+
+.my-crop-growth-container {
+    margin: 16px 0;
+    background: #eee;
+    border-radius: 10px;
+    height: 10px;
+    position: relative;
+}
+
+.my-crop-growth-bar {
+    background: var(--point-color3);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.my-crop-growth-percentage {
+    position: absolute;
+    right: 0;
+    top: -20px;
+    font-size: 0.8rem;
+    color: var(--point-color3);
+}
+
+.my-crop-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.my-crop-edit-btn,
+.my-crop-delete-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.my-crop-edit-btn {
+    color: var(--point-color3);
+}
+
+.my-crop-delete-btn {
+    color: #dc3545;
+}
+
+.my-crop-edit-btn:hover {
+    color: var(--point-color4);
+}
+
+.my-crop-delete-btn:hover {
+    color: #c82333;
 }
 
 /* 모바일 대응 */
 @media (max-width: 768px) {
-    .lower-nav {
-        height: 56px;
+    .my-crop-container {
+        padding: 16px;
     }
 
-    .nav-item i {
-        font-size: 1.3rem;
+    .my-crop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
     }
 
-    .nav-item span {
-        font-size: 0.65rem;
+    .my-crop-add-button {
+        width: 100%;
+        justify-content: center;
     }
 
-    .chatbot-button {
-        width: 50px;
-        height: 50px;
-        right: 16px;
-        bottom: 86px;
-        font-size: 0.8rem;
+    .my-crop-list {
+        grid-template-columns: 1fr;
     }
 }
 
-/* 하단 네비게이션 바가 있는 경우 메인 컨텐츠 영역 조정 */
-.page-container {
-    padding-bottom: 70px;
+.bottom-navigation{
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  
+}
+
+.bottom-nav-item{
+  display: flex;
 }
