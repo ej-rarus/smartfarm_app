@@ -64,6 +64,10 @@ function MyCrop() {
     }
   };
 
+  const handleCropClick = (id) => {
+    navigate(`/mycrop/${id}`);
+  };
+
   return (
     <div className="my-crop-container">
       <div className="my-crop-header">
@@ -84,7 +88,12 @@ function MyCrop() {
 
       <div className="my-crop-list">
         {crops.map(crop => (
-          <div key={crop.id} className="my-crop-card">
+          <div 
+            key={crop.id} 
+            className="my-crop-card"
+            onClick={() => handleCropClick(crop.id)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="my-crop-info">
               <div className="my-crop-title">
                 <FontAwesomeIcon icon={faSeedling} className="crop-icon" />

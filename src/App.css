@@ -1721,3 +1721,19 @@ input:focus, textarea:focus, select:focus {
 .bottom-nav-item{
   display: flex;
 }
+
+.feed-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .feed-container {
+    padding: 0;
+  }
+}

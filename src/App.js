@@ -18,6 +18,7 @@ import ResetPassword from "./pages/ResetPassword";
 import MyPage from "./pages/MyPage";
 import MyCrop from './pages/MyCrop';
 import MyCropNew from './pages/MyCropNew';
+import Feed from './pages/Feed';
 
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
@@ -92,6 +93,12 @@ function AppContent() {
         <Route path="/mycrop/new" element={
           <ProtectedRoute>
             <MyCropNew />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/feed" element={
+          <ProtectedRoute>
+            <Feed />
           </ProtectedRoute>
         } />
         
