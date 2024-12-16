@@ -44,7 +44,10 @@ function Sidebar({menuVisible, setMenuVisible}){
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/mycrop')}}>
                 내 작물
             </div>
-
+            <div className={`sidebar-btn ${isCurrentPath('/feed') ? 'active' : ''}`}
+                onClick={()=>{setMenuVisible(!menuVisible); navigate('/feed')}}>
+                커뮤니티
+            </div>
             <div className="sidebar-bottom">
                 {isLoggedIn ? (
                     <>

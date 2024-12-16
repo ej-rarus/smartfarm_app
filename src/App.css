@@ -502,18 +502,16 @@ footer{
   border-top: 1px solid #eee;
 }
 
-.action-buttons {
-  display: flex;
+.action-button {
   gap: 1rem;
-}
-
-button {
-  padding: 0.7rem 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
   transition: all 0.2s;
+  background-color: white;
 }
 
 .back-btn {
@@ -1685,26 +1683,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* 모바일 대응 */
-@media (max-width: 768px) {
-    .my-crop-container {
-        padding: 16px;
-    }
 
-    .my-crop-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .my-crop-add-button {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .my-crop-list {
-        grid-template-columns: 1fr;
-    }
-}
 
 .bottom-navigation{
   position: fixed;
@@ -1723,17 +1702,113 @@ input:focus, textarea:focus, select:focus {
 }
 
 .feed-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-@media (max-width: 640px) {
-  .feed-container {
-    padding: 0;
-  }
+
+
+.post-container{
+  width: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.post-header{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.post-user-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.user-details{
+  display: flex;
+  flex-direction: row;
+  margin-left: 0.5rem;
+}
+
+.username{
+  font-weight: bold;
+  margin-right: 0.3rem;
+}
+
+.username-suffix{
+  margin-right: 0.3rem;
+}
+
+.crop-nickname{
+  margin-right: 0.3rem;
+  font-weight: bold;
+} 
+
+.post-image-container{
+  width: 100%;
+  overflow: hidden;
+}
+
+.post-image{
+  height: 100%;
+  
+}
+
+.post-actions{
+  width: 100%;
+}
+
+.post-stats{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: left;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding-left: 0.5rem;
+}
+
+.likes-count{
+  padding-right: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.comments-count{
+  padding-right: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.post-content{
+  width: 100%;
+  padding-left: 0.5rem;
+  
+  margin-top: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.content-username{
+  font-weight: bold;
+  padding-right: 0.5rem;
+  font-family: 'Pretendard-Regular';
+
+}
+
+.content-text{
+  font-family: 'Pretendard-Regular';
+  
 }
