@@ -1,12 +1,12 @@
-import React from 'react';
-import Post from '../components/Post';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-function Feed() {
+function CropPosts() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const posts = [
+  const [posts] = useState([
     {
       id: 1,
       cropId: 1, // 토마토
@@ -73,25 +73,46 @@ function Feed() {
       username: "초록마을",
       cropNickname: "토마토",
       userProfileImage: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400",
-      imageUrl: "https://images.unsplash.com/photo-1506073881649-4e23be3e9ed0?w=600",
+      imageUrl: "https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?w=600",
       content: "토마토 지지대 설치했어요 📝 이제 튼튼하게 자랄 수 있겠죠?",
       likes: 37,
       comments: 11,
       createdAt: "2024-03-11T14:10:00"
     }
-  ];
+  ]);
+
+  const cropPosts = posts.filter(post => post.cropId === parseInt(id));
+  const handleCropClick = (id) => {
+    navigate(`/post/${id}`);
+  };
+
+  const handleAddPost = () => {
+    navigate(`/post/new?cropId=${id}`);
+  };
 
   return (
-      <div className="feed-container">
-        <button onClick={() => navigate(-1)} className="back-button">
+    <div className="crop-posts-container">
+      
+      <div className="crop-posts-header">
+      <button onClick={() => navigate(-1)} className="back-button">
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        {posts.map(post => (
-          <Post key={post.id} post={post} />
+        <button 
+          className="add-post-button back-button"
+          onClick={handleAddPost}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+      </div>
+      <div className="crop-posts-grid">
+        {cropPosts.map(posts => (
+          <div key={posts.id} className="crop-post-item" onClick={() => handleCropClick(posts.id)}>
+            <img src={posts.imageUrl} alt={posts.content} />
+          </div>
         ))}
       </div>
-
+    </div>
   );
 }
 
-export default Feed; 
+export default CropPosts;

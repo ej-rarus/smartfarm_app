@@ -19,6 +19,9 @@ import MyPage from "./pages/MyPage";
 import MyCrop from './pages/MyCrop';
 import MyCropNew from './pages/MyCropNew';
 import Feed from './pages/Feed';
+import NewPost from './pages/NewPost';
+import CropPostDetail from './pages/CropPostDetail';
+import CropPosts from "./pages/CropPosts";
 
 import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
@@ -95,13 +98,21 @@ function AppContent() {
             <MyCropNew />
           </ProtectedRoute>
         } />
+        <Route path="/mycrop/:id" element={<CropPosts />} />
         
         <Route path="/feed" element={
           <ProtectedRoute>
             <Feed />
           </ProtectedRoute>
         } />
-        
+
+        <Route path="/post/new" element={
+          <ProtectedRoute>
+            <NewPost />
+          </ProtectedRoute>
+        } />
+        <Route path="/post/:id" element={<CropPostDetail />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

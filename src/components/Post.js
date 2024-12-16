@@ -24,6 +24,7 @@ function Post({ post }) {
   return (
     <div className="post-container">
       {/* 헤더 영역 */}
+      
       <div className="post-header">
         <div className="post-user-info">
           <img 

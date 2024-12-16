@@ -1046,11 +1046,13 @@ footer{
 .chatbot-close-button {
   background-color: var(--point-color1);
   color: gray; 
-  width: 7rem;
+  width: 5  rem;
   height: 2.5rem;
   text-align: center;
   margin: 0;
   padding: 0;
+  border: none;
+  border-radius: 10px;
 }
 
 .chatbot-window {
@@ -1811,4 +1813,165 @@ input:focus, textarea:focus, select:focus {
 .content-text{
   font-family: 'Pretendard-Regular';
   
+}
+
+.crop-posts-container {
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.crop-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background-color: #f0f0f0;
+}
+
+.crop-post-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.crop-post-item:hover {
+  opacity: 0.9;
+}
+
+.crop-post-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* NewPost 스타일 */
+.new-post-container {
+  width: 25rem;
+  margin: 0 auto;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.new-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.new-post-header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.submit-button {
+  background: var(--point-color3);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.new-post-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.crop-select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+}
+
+.content-input {
+  width: 23rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  min-height: 150px;
+  resize: none;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+}
+
+.image-upload-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.image-upload-label {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #666;
+}
+
+.image-upload-label:hover {
+  border-color: var(--point-color3);
+  color: var(--point-color3);
+}
+
+.image-preview {
+  border: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.image-upload-label svg {
+  font-size: 24px;
+}
+
+.image-upload-label span {
+  font-size: 14px;
+}
+
+.crop-posts-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
 }

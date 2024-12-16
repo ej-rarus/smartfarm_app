@@ -1,15 +1,19 @@
-import React from 'react';
-import Post from '../components/Post';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Post from "../components/Post";
 
-function Feed() {
+
+
+function CropPostDetail() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  
   const posts = [
     {
       id: 1,
-      cropId: 1, // 토마토
+      cropId: 1,
       username: "농부킴",
       cropNickname: "사과",
       userProfileImage: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400",
@@ -80,18 +84,24 @@ function Feed() {
       createdAt: "2024-03-11T14:10:00"
     }
   ];
+  
+  const post = posts.find(post => post.id === parseInt(id));
+  
+  if (!post) {
+    return <div>포스트를 찾을 수 없습니다.</div>;
+  }
 
   return (
-      <div className="feed-container">
+    <div className="crop-post-detail">
+        
+      <div className="crop-post-detail-header">
         <button onClick={() => navigate(-1)} className="back-button">
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        {posts.map(post => (
-          <Post key={post.id} post={post} />
-        ))}
       </div>
-
+      <Post post={post} />
+    </div>
   );
 }
 
-export default Feed; 
+export default CropPostDetail;

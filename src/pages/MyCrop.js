@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLeaf, faPlus, faEdit, faTrash, faSeedling } from "@fortawesome/free-solid-svg-icons";
+import { faLeaf, faPlus, faEdit, faTrash, faSeedling, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import LowerNav from "../components/LowerNav";
 
 function MyCrop() {
@@ -33,6 +33,72 @@ function MyCrop() {
       variety: "청양고추",
       plantingDate: "2024-01-20",
       expectedHarvestDate: "2024-05-20",
+    }
+  ]);
+
+  const [posts] = useState([
+    {
+      id: 1,
+      cropId: 1, // 토마토
+      imageUrl: "https://picsum.photos/400/400?random=1",
+      content: "방울토마토가 쑥쑥 자라나고 있어요!",
+      createdAt: "2024-02-15"
+    },
+    {
+      id: 2,
+      cropId: 1,
+      imageUrl: "https://picsum.photos/400/400?random=2",
+      content: "첫 수확한 토마토입니다.",
+      createdAt: "2024-02-16"
+    },
+    {
+      id: 3,
+      cropId: 1,
+      imageUrl: "https://picsum.photos/400/400?random=3",
+      content: "토마토 잎이 튼튼해졌어요",
+      createdAt: "2024-02-17"
+    },
+    {
+      id: 4,
+      cropId: 2, // 상추
+      imageUrl: "https://picsum.photos/400/400?random=4",
+      content: "상추가 자라나는 중",
+      createdAt: "2024-02-15"
+    },
+    {
+      id: 5,
+      cropId: 2,
+      imageUrl: "https://picsum.photos/400/400?random=5",
+      content: "상추 모종 심기 완료!",
+      createdAt: "2024-02-16"
+    },
+    {
+      id: 6,
+      cropId: 3, // 고추
+      imageUrl: "https://picsum.photos/400/400?random=6",
+      content: "청양고추 첫 수확!",
+      createdAt: "2024-02-15"
+    },
+    {
+      id: 7,
+      cropId: 3,
+      imageUrl: "https://picsum.photos/400/400?random=7",
+      content: "고추가 빨갛게 익어가네요",
+      createdAt: "2024-02-16"
+    },
+    {
+      id: 8,
+      cropId: 3,
+      imageUrl: "https://picsum.photos/400/400?random=8",
+      content: "고추 모종 심었어요",
+      createdAt: "2024-02-17"
+    },
+    {
+      id: 9,
+      cropId: 3,
+      imageUrl: "https://picsum.photos/400/400?random=9",
+      content: "고추 키우기 시작!",
+      createdAt: "2024-02-18"
     }
   ]);
 
@@ -70,6 +136,9 @@ function MyCrop() {
 
   return (
     <div className="my-crop-container">
+      <button onClick={() => navigate(-1)} className="back-button">
+          <FontAwesomeIcon icon={faArrowLeft} />
+        </button>
       <div className="my-crop-header">
         <div className="my-crop-profile">
           <div className="my-crop-profile-image">
