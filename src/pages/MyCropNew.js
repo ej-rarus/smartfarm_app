@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faGlobe, faLock, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
-import LowerNav from "../components/LowerNav";
 
 function MyCropNew() {
   const navigate = useNavigate();
@@ -43,6 +42,16 @@ function MyCropNew() {
       ...prev,
       [name]: value
     }));
+  };
+
+  // 모든 필수 필드가 입력되었는지 확인하는 함수
+  const isFormValid = () => {
+    return (
+      formData.name.trim() !== "" &&
+      formData.variety !== "" &&
+      formData.plantDate !== null &&
+      formData.expectedHarvestDate !== null
+    );
   };
 
   return (
@@ -137,7 +146,11 @@ function MyCropNew() {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="submit-button">
+          <button 
+            type="submit" 
+            className={`mycrop-new-submit-button ${!isFormValid() ? 'disabled' : ''}`}
+            disabled={!isFormValid()}
+          >
             완료
           </button>
         </div>

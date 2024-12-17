@@ -27,7 +27,6 @@ import Nav from "./components/Nav";
 import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
-import AIChatBot from './components/AIChatBot';
 
 function AppContent() {
   const location = useLocation();

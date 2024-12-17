@@ -45,13 +45,6 @@ export default function NewPost() {
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <h1>새 게시물</h1>
-        <button 
-          className="submit-button"
-          onClick={handleSubmit}
-          disabled={!content || !selectedCrop}
-        >
-          완료
-        </button>
       </header>
 
       <form className="new-post-form" onSubmit={handleSubmit}>
@@ -100,8 +93,15 @@ export default function NewPost() {
           className="content-input"
         />
 
-        
-      </form>
+          
+        </form>
+        <button 
+          className="submit-button"
+          onClick={handleSubmit}
+          disabled={!content || !selectedCrop}
+        >
+          완료
+        </button>
     </div>
   );
 }

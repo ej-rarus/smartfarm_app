@@ -362,7 +362,8 @@ label{
 footer{
   width: 100%;
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  bottom: 0;
+  background: white;
 }
 
 .footer-content-container{
@@ -2053,10 +2054,12 @@ input:focus, textarea:focus, select:focus {
   color: white;
   border-radius: 8px;
   font-size: 16px;
+  font-family: 'Pretendard-Regular';
 }
 
 .crop-name-input::placeholder{
   color: white;
+  font-family: 'Pretendard-Regular';
 }
 
 .crop-variety-input{
@@ -2067,6 +2070,7 @@ input:focus, textarea:focus, select:focus {
   color: white;
   border-radius: 8px;
   font-size: 16px;
+  font-family: 'Pretendard-Regular';
 }
 
 .crop-visibility-input{
@@ -2106,4 +2110,30 @@ input:focus, textarea:focus, select:focus {
   flex-direction: column;
 }
 
+.mycrop-new-submit-button{
+  width: 25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  height: 3rem;
+  background-color: var(--point-color3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Pretendard-Regular';
+  cursor: pointer;
+  font-weight: bold;
+}
 
+.mycrop-new-submit-button:disabled {
+  width: 25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  height: 3rem;
+  background-color: #cccccc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Pretendard-Regular';
+}
