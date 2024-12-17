@@ -1,11 +1,12 @@
 import React from 'react';
 import Post from '../components/Post';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Feed() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const posts = [
     {
       id: 1,
@@ -81,11 +82,23 @@ function Feed() {
     }
   ];
 
+  const handleAddPost = () => {
+    navigate(`/post/new?cropId=${id}`);
+  };
+
   return (
       <div className="feed-container">
-        <button onClick={() => navigate(-1)} className="back-button">
-          <FontAwesomeIcon icon={faArrowLeft} />
+        <div className="feed-header">
+          <button onClick={() => navigate(-1)} className="back-button">
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+          <button 
+          className="add-post-button back-button"
+          onClick={handleAddPost}
+        >
+          <FontAwesomeIcon icon={faPlus} />
         </button>
+        </div>
         {posts.map(post => (
           <Post key={post.id} post={post} />
         ))}

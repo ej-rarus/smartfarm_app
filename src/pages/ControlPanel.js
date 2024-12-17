@@ -2,7 +2,7 @@ import '../App.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
 import StdControlBtn from '../components/StdControlBtn';
-
+import AIChatBot from '../components/AIChatBot';
 function ControlPanel() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
@@ -195,6 +195,8 @@ function ControlPanel() {
           <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
         </LineChart>
       </ResponsiveContainer>
+      <AIChatBot />
+
     </div>
   );
 }

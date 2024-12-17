@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faGlobe, faLock, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { ko } from "date-fns/locale";
 import LowerNav from "../components/LowerNav";
 
 function MyCropNew() {
@@ -9,8 +12,8 @@ function MyCropNew() {
   const [formData, setFormData] = useState({
     name: "",
     variety: "",
-    plantDate: "",
-    expectedHarvestDate: "",
+    plantDate: null,
+    expectedHarvestDate: null,
     visibility: "public"
   });
 
@@ -44,15 +47,15 @@ function MyCropNew() {
 
   return (
     <div className="mycrop-new-container">
-      <div className="mycrop-new-header">
+      <header className="ㅡ-header">
         <button 
           className="back-button"
-          onClick={() => navigate("/mycrop")}
+          onClick={() => navigate(-1)}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <h1>새 농작물</h1>
-      </div>
+      </header>
 
       <form onSubmit={handleSubmit} className="mycrop-new-form">
         <div className="form-group">
@@ -63,6 +66,7 @@ function MyCropNew() {
             value={formData.name}
             onChange={handleChange}
             placeholder="농작물 이름을 입력해주세요"
+            className="crop-name-input"
             required
           />
         </div>
@@ -73,6 +77,7 @@ function MyCropNew() {
             name="variety"
             value={formData.variety}
             onChange={handleChange}
+            className="crop-variety-input"
             required
           >
             {varietyOptions.map(option => (
@@ -85,32 +90,45 @@ function MyCropNew() {
 
         <div className="form-group">
           <label>파종일자</label>
-          <input
-            type="date"
-            name="plantDate"
-            value={formData.plantDate}
-            onChange={handleChange}
+          <DatePicker
+            selected={formData.plantDate}
+            onChange={(date) => {
+              setFormData(prev => ({
+                ...prev,
+                plantDate: date
+              }));
+            }}
+            locale={ko}
+            dateFormat="yyyy-MM-dd"
+            inline
             required
           />
         </div>
 
         <div className="form-group">
           <label>예상 수확일자</label>
-          <input
-            type="date"
-            name="expectedHarvestDate"
-            value={formData.expectedHarvestDate}
-            onChange={handleChange}
+          <DatePicker
+            selected={formData.expectedHarvestDate}
+            onChange={(date) => {
+              setFormData(prev => ({
+                ...prev,
+                expectedHarvestDate: date
+              }));
+            }}
+            locale={ko}
+            dateFormat="yyyy-MM-dd"
+            inline
             required
           />
         </div>
 
         <div className="form-group">
-          <label>공개범위</label>
+          <label>공개범위 <FontAwesomeIcon icon={faInfoCircle} /></label>
           <select
             name="visibility"
             value={formData.visibility}
             onChange={handleChange}
+            className="crop-visibility-input"
             required
           >
             <option value="public">전체 공개</option>
@@ -124,7 +142,6 @@ function MyCropNew() {
           </button>
         </div>
       </form>
-      <LowerNav />
     </div>
   );
 }

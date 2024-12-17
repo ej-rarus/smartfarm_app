@@ -94,7 +94,7 @@ function CropPosts() {
     <div className="crop-posts-container">
       
       <div className="crop-posts-header">
-      <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="back-button">
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <button 

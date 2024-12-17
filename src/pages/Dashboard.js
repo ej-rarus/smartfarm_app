@@ -12,6 +12,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import AIChatBot from '../components/AIChatBot';
 
 // Chart.js 등록
 ChartJS.register(
@@ -241,6 +242,7 @@ function Dashboard() {
                     <Line options={lightOptions} data={lightChartData} />
                 </div>
             </div>
+            <AIChatBot />
         </div>
     );
 }

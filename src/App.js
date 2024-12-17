@@ -124,7 +124,7 @@ function App() {
     <BrowserRouter>
       <AppContent />
       <Footer />
-      <AIChatBot />
+
     </BrowserRouter>
   );
 }
