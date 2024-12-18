@@ -3,15 +3,24 @@ import { useState, useEffect } from 'react';
 export default function Camera() {
   const [isStreaming, setIsStreaming] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   const streamUrl ='http://192.168.0.56:81/stream';
 
   const handleImageError = () => {
     setIsStreaming(false);
+    setIsLoading(false);
     setError('스트리밍 연결에 실패했습니다. 카메라 연결을 확인해주세요.');
   };
 
   const handleImageLoad = () => {
+    setIsStreaming(true);
+    setIsLoading(false);
+    setError(null);
+  };
+
+  const handleRefresh = () => {
+    setIsLoading(true);
     setIsStreaming(true);
     setError(null);
   };
@@ -25,18 +34,22 @@ export default function Camera() {
       
       <div className="stream-container">
         {isStreaming ? (
-          <img 
-            id="stream" 
-            src={streamUrl} 
-            alt="ESP32-CAM Stream"
-            onError={handleImageError}
-            onLoad={handleImageLoad}
-          />
+          <>
+            {isLoading && <div className="loading-message">스트리밍 로딩 중...</div>}
+            <img 
+              id="stream" 
+              src={streamUrl} 
+              alt="ESP32-CAM Stream"
+              onError={handleImageError}
+              onLoad={handleImageLoad}
+              style={{ display: isLoading ? 'none' : 'block' }}
+            />
+          </>
         ) : (
           <div className="stream-error">
             <p>스트리밍이 중단되었습니다</p>
-            <button onClick={() => setIsStreaming(true)}>
-              재연결 시도
+            <button onClick={handleRefresh}>
+              새로고침
             </button>
           </div>
         )}
