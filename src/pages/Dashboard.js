@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { isAuthenticated, getCurrentUser } from '../utils/auth';
+import Camera from '../components/Camera';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -74,7 +75,7 @@ function Dashboard() {
             // CO2 데이터 업데이트
             setCo2Data(prev => ({
                 labels: [...prev.labels, timeStr].slice(-10),
-                values: [...prev.values, Math.random() * 200 + 400].slice(-10) // 400~600ppm
+                values: [...prev.values, Math.random() * 1400 + 600].slice(-10) // 600~2000ppm
             }));
 
             // 조도 데이터 업데이트
@@ -133,8 +134,8 @@ function Dashboard() {
         scales: {
             y: {
                 beginAtZero: false,
-                min: 300,
-                max: 700
+                min: 500,
+                max: 2100
             }
         }
     };
@@ -227,7 +228,7 @@ function Dashboard() {
             <div className="dashboard-welcome">
                 {userData && <p>환영합니다, {userData.username}님!</p>}
             </div>
-
+            <Camera />
             <div className="charts-grid">
                 <div className="chart-container">
                     <Line options={tempOptions} data={tempChartData} />
