@@ -1,211 +1,133 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLeaf, faPlus, faEdit, faTrash, faSeedling, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import LowerNav from "../components/LowerNav";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-function MyCrop() {
+// 진행도 계산 함수
+const calculateProgress = (plantedDate, harvestDate) => {
+  console.log('planted_at:', plantedDate);
+  console.log('harvest_at:', harvestDate);
+  
+  const now = new Date();
+  const planted = new Date(plantedDate);
+  const harvest = new Date(harvestDate);
+  
+  console.log('planted Date 객체:', planted);
+  console.log('harvest Date 객체:', harvest);
+  
+  const totalDays = (harvest - planted) / (1000 * 60 * 60 * 24);
+  const daysElapsed = (now - planted) / (1000 * 60 * 60 * 24);
+  
+  console.log('총 일수:', totalDays);
+  console.log('경과 일수:', daysElapsed);
+  
+  const progress = (daysElapsed / totalDays) * 100;
+  return Math.min(Math.max(progress, 0), 100); // 0-100 사이 값으로 제한
+};
+
+// 남은 일수 계산 함수
+const calculateRemainingDays = (harvestDate) => {
+  console.log('harvest_at (남은 일수 계산):', harvestDate);
+  
+  const now = new Date();
+  const harvest = new Date(harvestDate);
+  
+  console.log('harvest Date 객체 (남은 일수 계산):', harvest);
+  
+  const remaining = Math.ceil((harvest - now) / (1000 * 60 * 60 * 24));
+  return Math.max(remaining, 0); // 음수 방지
+};
+
+// 진행도에 따른 색상 변경 함수
+const getProgressColor = (progress) => {
+  if (progress < 30) return '#ff9800'; // 초기 단계 (주황색)
+  if (progress < 60) return '#4caf50'; // 중간 단계 (초록색)
+  if (progress < 90) return '#2196f3'; // 성숙 단계 (파란색)
+  return '#9c27b0'; // 수확 단계 (보라색)
+};
+
+export default function MyCrop() {
+  const [crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [userData] = useState({
     username: "농부킴",
     profileImage: null
   });
 
-  // 데모 작물 데이터
-  const [crops, setCrops] = useState([
-    {
-      id: 1,
-      nickname: "귀여운 토마토",
-      variety: "방울토마토",
-      plantingDate: "2024-01-15",
-      expectedHarvestDate: "2024-04-15",
-    },
-    {
-      id: 2,
-      nickname: "상추는 상추상추",
-      variety: "청상추",
-      plantingDate: "2024-02-01",
-      expectedHarvestDate: "2024-03-15",
-    },
-    {
-      id: 3,
-      nickname: "매운맛 고추",
-      variety: "청양고추",
-      plantingDate: "2024-01-20",
-      expectedHarvestDate: "2024-05-20",
-    }
-  ]);
+  useEffect(() => {
+    const fetchMyCrops = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/mycrop`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        console.log('서버 응답 데이터:', response.data); // 데이터 확인
+        setCrops(response.data);
+      } catch (err) {
+        setError('작물 정보를 불러오는데 실패했습니다.');
+        console.error('작물 조회 에러:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [posts] = useState([
-    {
-      id: 1,
-      cropId: 1, // 토마토
-      imageUrl: "https://picsum.photos/400/400?random=1",
-      content: "방울토마토가 쑥쑥 자라나고 있어요!",
-      createdAt: "2024-02-15"
-    },
-    {
-      id: 2,
-      cropId: 1,
-      imageUrl: "https://picsum.photos/400/400?random=2",
-      content: "첫 수확한 토마토입니다.",
-      createdAt: "2024-02-16"
-    },
-    {
-      id: 3,
-      cropId: 1,
-      imageUrl: "https://picsum.photos/400/400?random=3",
-      content: "토마토 잎이 튼튼해졌어요",
-      createdAt: "2024-02-17"
-    },
-    {
-      id: 4,
-      cropId: 2, // 상추
-      imageUrl: "https://picsum.photos/400/400?random=4",
-      content: "상추가 자라나는 중",
-      createdAt: "2024-02-15"
-    },
-    {
-      id: 5,
-      cropId: 2,
-      imageUrl: "https://picsum.photos/400/400?random=5",
-      content: "상추 모종 심기 완료!",
-      createdAt: "2024-02-16"
-    },
-    {
-      id: 6,
-      cropId: 3, // 고추
-      imageUrl: "https://picsum.photos/400/400?random=6",
-      content: "청양고추 첫 수확!",
-      createdAt: "2024-02-15"
-    },
-    {
-      id: 7,
-      cropId: 3,
-      imageUrl: "https://picsum.photos/400/400?random=7",
-      content: "고추가 빨갛게 익어가네요",
-      createdAt: "2024-02-16"
-    },
-    {
-      id: 8,
-      cropId: 3,
-      imageUrl: "https://picsum.photos/400/400?random=8",
-      content: "고추 모종 심었어요",
-      createdAt: "2024-02-17"
-    },
-    {
-      id: 9,
-      cropId: 3,
-      imageUrl: "https://picsum.photos/400/400?random=9",
-      content: "고추 키우기 시작!",
-      createdAt: "2024-02-18"
-    }
-  ]);
+    fetchMyCrops();
+  }, []);
 
-  const calculateGrowthPercentage = (plantingDate, expectedHarvestDate) => {
-    const start = new Date(plantingDate).getTime();
-    const end = new Date(expectedHarvestDate).getTime();
-    const current = new Date().getTime();
-    const growth = ((current - start) / (end - start)) * 100;
-    return Math.min(Math.max(growth, 0), 100);
-  };
-
-  const calculateDaysFromPlanting = (plantingDate) => {
-    const start = new Date(plantingDate).getTime();
-    const current = new Date().getTime();
-    return Math.floor((current - start) / (1000 * 60 * 60 * 24));
-  };
-
-  const handleAddCrop = () => {
-    navigate("/mycrop/new");
-  };
-
-  const handleEditCrop = (id) => {
-    alert(`작물 ID ${id} 수정 기능은 아직 준비중입니다!`);
-  };
-
-  const handleDeleteCrop = (id) => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      setCrops(crops.filter(crop => crop.id !== id));
-    }
-  };
-
-  const handleCropClick = (id) => {
-    navigate(`/mycrop/${id}`);
-  };
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="my-crop-container">
-      <button onClick={() => navigate(-1)} className="back-button">
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-      <div className="my-crop-header">
-        <div className="my-crop-profile">
-          <div className="my-crop-profile-image">
-            {userData?.profileImage ? (
-              <img src={userData.profileImage} alt="프로필" />
-            ) : (
-              <FontAwesomeIcon icon={faLeaf} size="2x" />
-            )}
-          </div>
-          <h2>{userData?.username}님의 농장</h2>
-        </div>
-        <button className="my-crop-add-button" onClick={handleAddCrop}>
-          <FontAwesomeIcon icon={faPlus} /> 작물 추가
-        </button>
-      </div>
-
+      <h2>내 작물 관리</h2>
+      <button 
+        className="my-crop-add-button"
+        onClick={() => navigate('/mycrop/new')}
+      >
+        새 작물 추가
+      </button>
       <div className="my-crop-list">
-        {crops.map(crop => (
+        {crops.map((crop) => (
           <div 
             key={crop.id} 
             className="my-crop-card"
-            onClick={() => handleCropClick(crop.id)}
-            style={{ cursor: 'pointer' }}
+            onClick={() => navigate(`/mycrop/${crop.id}`)}
           >
-            <div className="my-crop-info">
-              <div className="my-crop-title">
-                <FontAwesomeIcon icon={faSeedling} className="crop-icon" />
-                <h3>{crop.nickname}</h3>
-              </div>
-              <p className="my-crop-variety">{crop.variety}</p>
-              <p className="my-crop-date">
-                파종일로부터 {calculateDaysFromPlanting(crop.plantingDate)}일
-              </p>
-              <p className="my-crop-description">{crop.description}</p>
+            <div className="my-crop-profile-image">
+              {crop.image_url ? (
+                <img src={crop.image_url} alt={crop.nickname} />
+              ) : (
+                <i className="fas fa-seedling"></i>
+              )}
             </div>
+            <h3>{crop.nickname}</h3>
+            <p>{crop.species}</p>
+            <p>심은 날짜: {new Date(crop.planted_at).toLocaleDateString()}</p>
+            <p>{Math.floor((new Date() - new Date(crop.planted_at)) / (1000 * 60 * 60 * 24))}일째</p>
             
-            <div className="my-crop-growth-container">
-              <div 
-                className="my-crop-growth-bar"
-                style={{ 
-                  width: `${calculateGrowthPercentage(crop.plantingDate, crop.expectedHarvestDate)}%`
-                }}
-              />
-              <span className="my-crop-growth-percentage">
-                {Math.round(calculateGrowthPercentage(crop.plantingDate, crop.expectedHarvestDate))}%
-              </span>
-            </div>
-
-            <div className="my-crop-actions">
-              <button 
-                className="my-crop-edit-btn"
-                onClick={() => handleEditCrop(crop.id)}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </button>
-              <button 
-                className="my-crop-delete-btn"
-                onClick={() => handleDeleteCrop(crop.id)}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
+            <div className="harvest-progress">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{ 
+                    width: `${calculateProgress(crop.planted_at, crop.harvest_at)}%`,
+                    backgroundColor: getProgressColor(calculateProgress(crop.planted_at, crop.harvest_at))
+                  }}
+                />
+              </div>
+              <p className="progress-text">
+                수확까지 {calculateRemainingDays(crop.harvest_at)}일
+              </p>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-}
-
-export default MyCrop; 
+} 

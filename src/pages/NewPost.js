@@ -1,11 +1,15 @@
 // src/pages/NewPost.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faImage } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 export default function NewPost() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const cropId = searchParams.get('cropId');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedCrop, setSelectedCrop] = useState('');
@@ -30,9 +34,33 @@ export default function NewPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // API 호출 로직 구현
-    console.log({ title, content, selectedCrop, image });
-    navigate(-1); // 제출 후 이전 페이지로 이동
+    
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      
+      formData.append('crop_id', cropId);
+      formData.append('post_text', content);
+      if (image) {
+        formData.append('post_img', image);
+      }
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/mycrop/${cropId}/posts`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          }
+        }
+      );
+
+      navigate(`/mycrop/${cropId}`);
+    } catch (error) {
+      console.error('게시글 작성 중 오류 발생:', error);
+      alert('게시글 작성에 실패했습니다.');
+    }
   };
 
   return (

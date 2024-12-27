@@ -1589,8 +1589,10 @@ input:focus, textarea:focus, select:focus {
     background: white;
     border-radius: 12px;
     padding: 20px;
+    margin-top: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .my-crop-card:hover {
@@ -2199,4 +2201,29 @@ input:focus, textarea:focus, select:focus {
   max-width: 600px; /* 차트가 너무 커지는 것을 방지 */
   min-width: 300px; /* 차트가 너무 작아지는 것을 방지 */
   min-height: 200px;
+}
+
+.harvest-progress {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.progress-text {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #666;
+  text-align: center;
 }
