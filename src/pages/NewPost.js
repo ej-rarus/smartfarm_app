@@ -1,5 +1,5 @@
 // src/pages/NewPost.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -15,14 +15,7 @@ export default function NewPost() {
   const [selectedCrop, setSelectedCrop] = useState('');
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-
-  const crops = [
-    { value: 'tomato', label: '토마토' },
-    { value: 'strawberry', label: '딸기' },
-    { value: 'lettuce', label: '상추' },
-    { value: 'cucumber', label: '오이' },
-    { value: 'pepper', label: '고추' }
-  ];
+  const [crops, setCrops] = useState([]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -62,6 +55,35 @@ export default function NewPost() {
       alert('게시글 작성에 실패했습니다.');
     }
   };
+
+  useEffect(() => {
+    const fetchUserCrops = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/mycrop`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        // 서버에서 받은 작물 데이터를 select에 맞는 형식으로 변환
+        const formattedCrops = response.data.map(crop => ({
+          value: crop.id,
+          label: crop.nickname || crop.species // nickname이 없으면 species를 사용
+        }));
+
+        setCrops(formattedCrops);
+      } catch (error) {
+        console.error('작물 목록 조회 실패:', error);
+        // 에러 처리 (예: 알림 표시)
+      }
+    };
+
+    fetchUserCrops();
+  }, []);
 
   return (
     <div className="new-post-container">

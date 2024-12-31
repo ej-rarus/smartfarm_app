@@ -5,16 +5,17 @@ import { faArrowLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
+import axios from "axios";
 
 function MyCropNew() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
-    variety: "",
-    plantDate: null,
-    expectedHarvestDate: null,
-    visibility: "public"
+    nickname: "",
+    species: "",
+    planted_at: null,
+    harvest_at: null,
   });
+  const [error, setError] = useState(null);
 
   // 품종 선택 옵션
   const varietyOptions = [
@@ -28,12 +29,44 @@ function MyCropNew() {
     { value: "감자", label: "감자" }
   ];
 
-  const handleSubmit = (e) => {
+  const formatDate = (date) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("제출된 데이터:", formData);
-    // 실제 API 연동 전 테스트용 알림
-    alert("작물이 등록되었습니다!");
-    navigate("/mycrop");
+    setError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/mycrop`,
+        {
+          species: formData.species,
+          nickname: formData.nickname,
+          planted_at: formatDate(formData.planted_at),
+          harvest_at: formatDate(formData.harvest_at)
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.status === 201) {
+        alert("작물이 성공적으로 등록되었습니다!");
+        navigate("/mycrop");
+      }
+    } catch (err) {
+      console.error('작물 등록 중 오류 발생:', err);
+      setError(err.response?.data?.message || "작물 등록에 실패했습니다.");
+    }
   };
 
   const handleChange = (e) => {
@@ -44,19 +77,18 @@ function MyCropNew() {
     }));
   };
 
-  // 모든 필수 필드가 입력되었는지 확인하는 함수
   const isFormValid = () => {
     return (
-      formData.name.trim() !== "" &&
-      formData.variety !== "" &&
-      formData.plantDate !== null &&
-      formData.expectedHarvestDate !== null
+      formData.nickname.trim() !== "" &&
+      formData.species !== "" &&
+      formData.planted_at !== null &&
+      formData.harvest_at !== null
     );
   };
 
   return (
     <div className="mycrop-new-container">
-      <header className="ㅡ-header">
+      <header className="mycrop-header">
         <button 
           className="back-button"
           onClick={() => navigate(-1)}
@@ -66,13 +98,19 @@ function MyCropNew() {
         <h1>새 농작물</h1>
       </header>
 
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="mycrop-new-form">
         <div className="form-group">
           <label>이름</label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="nickname"
+            value={formData.nickname}
             onChange={handleChange}
             placeholder="농작물 이름을 입력해주세요"
             className="crop-name-input"
@@ -83,8 +121,8 @@ function MyCropNew() {
         <div className="form-group">
           <label>품종</label>
           <select
-            name="variety"
-            value={formData.variety}
+            name="species"
+            value={formData.species}
             onChange={handleChange}
             className="crop-variety-input"
             required
@@ -100,11 +138,11 @@ function MyCropNew() {
         <div className="form-group">
           <label>파종일자</label>
           <DatePicker
-            selected={formData.plantDate}
+            selected={formData.planted_at}
             onChange={(date) => {
               setFormData(prev => ({
                 ...prev,
-                plantDate: date
+                planted_at: date
               }));
             }}
             locale={ko}
@@ -117,11 +155,11 @@ function MyCropNew() {
         <div className="form-group">
           <label>예상 수확일자</label>
           <DatePicker
-            selected={formData.expectedHarvestDate}
+            selected={formData.harvest_at}
             onChange={(date) => {
               setFormData(prev => ({
                 ...prev,
-                expectedHarvestDate: date
+                harvest_at: date
               }));
             }}
             locale={ko}
@@ -129,20 +167,6 @@ function MyCropNew() {
             inline
             required
           />
-        </div>
-
-        <div className="form-group">
-          <label>공개범위 <FontAwesomeIcon icon={faInfoCircle} /></label>
-          <select
-            name="visibility"
-            value={formData.visibility}
-            onChange={handleChange}
-            className="crop-visibility-input"
-            required
-          >
-            <option value="public">전체 공개</option>
-            <option value="private">비공개</option>
-          </select>
         </div>
 
         <div className="form-actions">
