@@ -28,18 +28,29 @@ export default function NewPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!selectedCrop) {
+      alert('작물을 선택해주세요');
+      return;
+    }
+    
+    if (!content) {
+      alert('게시글 내용을 입력해주세요');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
       
       formData.append('crop_id', cropId);
       formData.append('post_text', content);
+      
       if (image) {
         formData.append('post_img', image);
       }
 
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/mycrop/${cropId}/posts`,
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/mycrop/${selectedCrop}/posts`,
         formData,
         {
           headers: {
@@ -49,10 +60,14 @@ export default function NewPost() {
         }
       );
 
-      navigate(`/mycrop/${cropId}`);
+      if (response.data.status === 201) {
+        alert('게시글이 성공적으로 등록되었습니다.');
+        navigate(`/mycrop/${cropId}`); // 또는 원하는 페이지로 이동
+      }
+
     } catch (error) {
-      console.error('게시글 작성 중 오류 발생:', error);
-      alert('게시글 작성에 실패했습니다.');
+      console.error('게시글 등록 실패:', error);
+      alert(error.response?.data?.message || '게시글 등록 중 오류가 발생했습니다.');
     }
   };
 

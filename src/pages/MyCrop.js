@@ -3,35 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // 진행도 계산 함수
-const calculateProgress = (plantedDate, harvestDate) => {
-  console.log('planted_at:', plantedDate);
-  console.log('harvest_at:', harvestDate);
-  
-  const now = new Date();
-  const planted = new Date(plantedDate);
-  const harvest = new Date(harvestDate);
-  
-  console.log('planted Date 객체:', planted);
-  console.log('harvest Date 객체:', harvest);
-  
-  const totalDays = (harvest - planted) / (1000 * 60 * 60 * 24);
-  const daysElapsed = (now - planted) / (1000 * 60 * 60 * 24);
-  
-  console.log('총 일수:', totalDays);
-  console.log('경과 일수:', daysElapsed);
-  
-  const progress = (daysElapsed / totalDays) * 100;
-  return Math.min(Math.max(progress, 0), 100); // 0-100 사이 값으로 제한
+const calculateProgress = (planted_at, harvest_at) => {
+  const plantedDate = new Date(planted_at);
+  const harvestDate = new Date(harvest_at);
+  const currentDate = new Date();
+
+  const totalDays = (harvestDate - plantedDate) / (1000 * 60 * 60 * 24);
+  const elapsedDays = (currentDate - plantedDate) / (1000 * 60 * 60 * 24);
+
+  return Math.min(Math.max((elapsedDays / totalDays) * 100, 0), 100);
 };
 
 // 남은 일수 계산 함수
 const calculateRemainingDays = (harvestDate) => {
-  console.log('harvest_at (남은 일수 계산):', harvestDate);
   
   const now = new Date();
   const harvest = new Date(harvestDate);
   
-  console.log('harvest Date 객체 (남은 일수 계산):', harvest);
   
   const remaining = Math.ceil((harvest - now) / (1000 * 60 * 60 * 24));
   return Math.max(remaining, 0); // 음수 방지
@@ -67,7 +55,6 @@ export default function MyCrop() {
             }
           }
         );
-        console.log('서버 응답 데이터:', response.data); // 데이터 확인
         setCrops(response.data);
       } catch (err) {
         setError('작물 정보를 불러오는데 실패했습니다.');
