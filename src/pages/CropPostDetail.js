@@ -5,7 +5,6 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
 import defaultPostImg from '../assets/default-post.png';
 import defaultProfileImg from '../assets/default-profile.png';
-import '../App.css';
 
 function CropPostDetail() {
   const navigate = useNavigate();
@@ -13,6 +12,7 @@ function CropPostDetail() {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   const getImageUrl = (path) => {
     if (!path) return defaultPostImg;
@@ -21,7 +21,7 @@ function CropPostDetail() {
   };
 
   useEffect(() => {
-    const fetchPostDetail = async () => {
+    const fetchPostAndUserData = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -29,30 +29,39 @@ function CropPostDetail() {
           return;
         }
 
-        const response = await axios.get(
+        // 게시글 정보 조회
+        const postResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/post/${id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
           }
         );
 
-        if (response.data) {
-          setPost(response.data);
-          console.log('받은 데이터:', response.data);
-        } else {
-          throw new Error('데이터가 없습니다.');
+        if (postResponse.data.status === 200) {
+          const postData = postResponse.data.data;
+          setPost(postData);
+
+          // 게시글 작성자의 사용자 정보 조회
+          const userResponse = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/user/${postData.user_id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` }
+            }
+          );
+
+          if (userResponse.data.status === 200) {
+            setUserData(userResponse.data.data);
+          }
         }
       } catch (error) {
-        console.error('게시글 상세 정보 로딩 실패:', error);
-        setError('게시글을 불러오는데 실패했습니다.');
+        console.error('데이터 로딩 실패:', error);
+        setError(error.response?.data?.message || '데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPostDetail();
+    fetchPostAndUserData();
   }, [id, navigate]);
 
   if (loading) return <div className="loading">로딩 중...</div>;
@@ -70,15 +79,15 @@ function CropPostDetail() {
         <div className="post-header">
           <div className="post-user-info">
             <img 
-              src={post.profile_img ? getImageUrl(post.profile_img) : defaultProfileImg} 
+              src={userData?.profile_image ? getImageUrl(userData.profile_image) : defaultProfileImg} 
               alt="프로필" 
               className="profile-image"
             />
             <div className="user-details">
-              <span className="username">{post.username}</span>
+              <span className="username">{userData?.username}</span>
               <span className="username-suffix">님의</span>
-              <span className="crop-species">{post.species}</span>
-              <span className="crop-nickname">{post.nickname}</span>
+              <span className="crop-species">{post?.species}</span>
+              <span className="crop-nickname">{post?.nickname}</span>
             </div>
           </div>
         </div>

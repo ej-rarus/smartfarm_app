@@ -1766,6 +1766,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .crop-nickname{
+  margin-left: 0.3rem;
   margin-right: 0.3rem;
   font-weight: bold;
 } 
@@ -1840,7 +1841,7 @@ input:focus, textarea:focus, select:focus {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  background-color: #f0f0f0;
+  background-color: #ffffff;
 }
 
 .crop-post-item {
@@ -2252,7 +2253,6 @@ input:focus, textarea:focus, select:focus {
 
 /* 필요한 경우 기존 스타일 수정 */
 .post-header {
-  padding: 12px;
   display: flex;
   align-items: center;
 }
@@ -2271,5 +2271,4 @@ input:focus, textarea:focus, select:focus {
 }
 
 .post-content {
-  padding: 12px;
 }
