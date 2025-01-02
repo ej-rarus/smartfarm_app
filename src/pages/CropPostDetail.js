@@ -66,7 +66,8 @@ function CropPostDetail() {
   if (!post) return <div className="not-found">게시글을 찾을 수 없습니다.</div>;
 
   return (
-    <div className="crop-post-detail">
+    <div className="feed-container">
+      <div className="post-container">
       <div className="post-header">
         <button onClick={() => navigate(-1)} className="back-button">
           <FontAwesomeIcon icon={faArrowLeft} />
@@ -111,6 +112,7 @@ function CropPostDetail() {
         <div className="post-date">
           {dayjs(post.created_at).format('YYYY년 MM월 DD일 HH:mm')}
         </div>
+      </div>
       </div>
     </div>
   );
