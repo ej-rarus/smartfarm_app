@@ -1311,7 +1311,12 @@ footer{
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #e0e0e0;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #999;
 }
 
 .author-input {
@@ -1772,7 +1777,7 @@ input:focus, textarea:focus, select:focus {
 
 .post-image{
   width: 100%;
-  height: 300px;
+  height: 100%;
   object-fit: cover;
   background-color: #f0f0f0;
 }
@@ -2223,4 +2228,48 @@ input:focus, textarea:focus, select:focus {
   font-size: 0.9em;
   color: #666;
   text-align: center;
+}
+
+/* CropPostDetail 스타일 */
+.feed-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.post {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 필요한 경우 기존 스타일 수정 */
+.post-header {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.post-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-content {
+  padding: 12px;
 }

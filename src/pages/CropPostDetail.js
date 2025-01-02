@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
-
-dayjs.locale('ko');
+import defaultPostImg from '../assets/default-post.png';
+import defaultProfileImg from '../assets/default-profile.png';
+import '../App.css';
 
 function CropPostDetail() {
   const navigate = useNavigate();
@@ -15,9 +14,8 @@ function CropPostDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 이미지 URL 생성 헬퍼 함수
   const getImageUrl = (path) => {
-    if (!path) return "/default-image.png";
+    if (!path) return defaultPostImg;
     if (path.startsWith('http')) return path;
     return `${process.env.REACT_APP_API_URL}${path}`;
   };
@@ -32,27 +30,23 @@ function CropPostDetail() {
         }
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/crop-post/${id}`,
+          `${process.env.REACT_APP_API_URL}/api/post/${id}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            withCredentials: true
+              Authorization: `Bearer ${token}`
+            }
           }
         );
 
-        if (response.data.status === 200) {
-          setPost(response.data.data);
+        if (response.data) {
+          setPost(response.data);
+          console.log('받은 데이터:', response.data);
+        } else {
+          throw new Error('데이터가 없습니다.');
         }
       } catch (error) {
         console.error('게시글 상세 정보 로딩 실패:', error);
-        if (error.response) {
-          setError(error.response.data.message || '게시글을 불러오는데 실패했습니다.');
-        } else {
-          setError('서버와의 연결에 실패했습니다.');
-        }
+        setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -67,55 +61,49 @@ function CropPostDetail() {
 
   return (
     <div className="feed-container">
-      <div className="post-container">
-      <div className="post-header">
+      <div className="feed-header">
         <button onClick={() => navigate(-1)} className="back-button">
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <div className="user-info">
-          
-          <div className="user-text">
-            <div className="username">{post.username}</div>
-            <div className="crop-nickname">{post.crop_nickname}</div>
+      </div>
+      <div className="post-container">
+        <div className="post-header">
+          <div className="post-user-info">
+            <img 
+              src={post.profile_img ? getImageUrl(post.profile_img) : defaultProfileImg} 
+              alt="프로필" 
+              className="profile-image"
+            />
+            <div className="user-details">
+              <span className="username">{post.username}</span>
+              <span className="username-suffix">님의</span>
+              <span className="crop-species">{post.species}</span>
+              <span className="crop-nickname">{post.nickname}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="post-image-container">
-        {post.post_img && (
+        <div className="post-image-container">
           <img 
             src={getImageUrl(post.post_img)} 
-            alt="게시글 이미지" 
-            className="post-image"
-            crossOrigin="anonymous"
+            alt="게시글 이미지"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "/default-post-image.png";
+              e.target.src = defaultPostImg;
             }}
           />
-        )}
-      </div>
-
-      <div className="post-content">
-        <div className="interaction-buttons">
-          <button className="like-button">
-            <FontAwesomeIcon icon={faHeart} />
-            <span>{post.likes || 0}</span>
-          </button>
-          <button className="comment-button">
-            <FontAwesomeIcon icon={faComment} />
-            <span>{post.comments || 0}</span>
-          </button>
         </div>
 
-        <div className="post-text">{post.post_text}</div>
-        <div className="post-date">
-          {dayjs(post.created_at).format('YYYY년 MM월 DD일 HH:mm')}
+        <div className="post-content">
+          <span className="content-text">{post.post_text}</span>
+          <p className="date">
+            {new Date(post.created_at).toLocaleDateString()}
+          </p>
         </div>
-      </div>
       </div>
     </div>
   );
 }
 
 export default CropPostDetail;
+
