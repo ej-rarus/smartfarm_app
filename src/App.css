@@ -1538,7 +1538,7 @@ input:focus, textarea:focus, select:focus {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 0.5rem;
 }
 
 .my-crop-profile {
@@ -1567,6 +1567,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .my-crop-add-button {
+    margin-top: 0.7rem;
     padding: 8px 16px;
     background: var(--point-color3);
     color: white;
@@ -1589,7 +1590,7 @@ input:focus, textarea:focus, select:focus {
     background: white;
     border-radius: 12px;
     padding: 20px;
-    margin-top: 1rem;
+    margin-top: 0.3rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
     cursor: pointer;

@@ -36,10 +36,6 @@ function Sidebar({menuVisible, setMenuVisible}){
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/controlpanel')}}>
                 컨트롤패널
             </div>
-            <div className={`sidebar-btn ${isCurrentPath('/diary') ? 'active' : ''}`}
-                onClick={()=>{setMenuVisible(!menuVisible); navigate('/diary')}}>
-                영농일지
-            </div>
             <div className={`sidebar-btn ${isCurrentPath('/mycrop') ? 'active' : ''}`}
                 onClick={()=>{setMenuVisible(!menuVisible); navigate('/mycrop')}}>
                 내 작물

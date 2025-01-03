@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus, faHeart, faComment } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import defaultPostImg from '../assets/default-post.png';
 import defaultProfileImg from '../assets/default-profile.png';
@@ -34,7 +34,7 @@ function Feed() {
     if (node) observer.current.observe(node);
   }, [loading, hasMore]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
@@ -52,7 +52,9 @@ function Feed() {
 
       if (response.data.status === 200) {
         const newPosts = response.data.data;
-        setPosts(prevPosts => [...prevPosts, ...newPosts]);
+        setPosts(prevPosts => 
+          page === 1 ? newPosts : [...new Set([...prevPosts, ...newPosts].map(post => JSON.stringify(post)))].map(str => JSON.parse(str))
+        );
         setHasMore(newPosts.length === POSTS_PER_PAGE);
       }
     } catch (error) {
@@ -61,14 +63,45 @@ function Feed() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, navigate]);
 
   useEffect(() => {
     fetchPosts();
-  }, [page]);
+  }, [fetchPosts]);
+
+  const resetPosts = useCallback(() => {
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+  }, []);
+
+  useEffect(() => {
+    resetPosts();
+  }, [resetPosts]);
 
   const handleAddPost = () => {
     navigate(`/post/new?cropId=${id}`);
+  };
+
+  const formatTimeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    
+    const intervals = {
+      년: 31536000,
+      개월: 2592000,
+      일: 86400,
+      시간: 3600,
+      분: 60
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval}${unit} 전`;
+      }
+    }
+    
+    return '방금 전';
   };
 
   if (error) return <div className="error-message">{error}</div>;
@@ -86,9 +119,10 @@ function Feed() {
 
       {posts.map((post, index) => (
         <div 
-          key={post.id} 
+          key={`${post.id}-${index}`}
           ref={index === posts.length - 1 ? lastPostElementRef : null}
           className="post-container"
+          onClick={() => navigate(`/post/${post.id}`)}
         >
           <div className="post-header">
             <div className="post-user-info">
@@ -117,10 +151,21 @@ function Feed() {
             />
           </div>
 
+          <div className="post-actions">
+            <button className="action-button">
+              <FontAwesomeIcon icon={faHeart} />
+              <span className="action-count">{post.likes || 0}</span>
+            </button>
+            <button className="action-button">
+              <FontAwesomeIcon icon={faComment} />
+              <span className="action-count">{post.comments || 0}</span>
+            </button>
+          </div>
+
           <div className="post-content">
             <span className="content-text">{post.post_text}</span>
             <p className="date">
-              {new Date(post.created_at).toLocaleDateString()}
+              {formatTimeAgo(post.created_at)}
             </p>
           </div>
         </div>

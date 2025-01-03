@@ -27,10 +27,10 @@ const calculateRemainingDays = (harvestDate) => {
 
 // 진행도에 따른 색상 변경 함수
 const getProgressColor = (progress) => {
-  if (progress < 30) return '#ff9800'; // 초기 단계 (주황색)
-  if (progress < 60) return '#4caf50'; // 중간 단계 (초록색)
-  if (progress < 90) return '#2196f3'; // 성숙 단계 (파란색)
-  return '#9c27b0'; // 수확 단계 (보라색)
+  if (progress < 30) return '#ff0000'; // 초기 단계 (빨강색)
+  if (progress < 60) return '#ffa500'; // 중간 단계 (노랑색)
+  if (progress < 90) return '#00ff00'; // 성숙 단계 (초록색)
+  return '#4caf50'; // 수확 단계 (초록)
 };
 
 export default function MyCrop() {
@@ -72,13 +72,15 @@ export default function MyCrop() {
 
   return (
     <div className="my-crop-container">
-      <h2>내 작물 관리</h2>
-      <button 
-        className="my-crop-add-button"
-        onClick={() => navigate('/mycrop/new')}
-      >
-        새 작물 추가
-      </button>
+      <div className="my-crop-header">
+        <h2>내 작물 관리</h2>
+        <button 
+          className="my-crop-add-button"
+          onClick={() => navigate('/mycrop/new')}
+        >
+          새 작물 추가
+        </button>
+      </div>
       <div className="my-crop-list">
         {crops.map((crop) => (
           <div 

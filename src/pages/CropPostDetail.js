@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
 import defaultPostImg from '../assets/default-post.png';
 import defaultProfileImg from '../assets/default-profile.png';
@@ -18,6 +18,27 @@ function CropPostDetail() {
     if (!path) return defaultPostImg;
     if (path.startsWith('http')) return path;
     return `${process.env.REACT_APP_API_URL}${path}`;
+  };
+
+  const formatTimeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    
+    const intervals = {
+      년: 31536000,
+      개월: 2592000,
+      일: 86400,
+      시간: 3600,
+      분: 60
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval}${unit} 전`;
+      }
+    }
+    
+    return '방금 전';
   };
 
   useEffect(() => {
@@ -103,11 +124,23 @@ function CropPostDetail() {
           />
         </div>
 
+        <div className="post-actions">
+          <button className="action-button">
+            <FontAwesomeIcon icon={faHeart} />
+            <span className="action-count">{post.likes || 0}</span>
+          </button>
+          <button className="action-button">
+            <FontAwesomeIcon icon={faComment} />
+            <span className="action-count">{post.comments || 0}</span>
+          </button>
+        </div>
+
         <div className="post-content">
-          <span className="content-text">{post.post_text}</span>
-          <p className="date">
-            {new Date(post.created_at).toLocaleDateString()}
+        <p className="date">
+            {formatTimeAgo(post.created_at)}
           </p>
+          <span className="content-text">{post.post_text}</span>
+          
         </div>
       </div>
     </div>
