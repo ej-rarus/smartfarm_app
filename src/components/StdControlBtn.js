@@ -15,39 +15,10 @@ function StdControlBtn({ ws }) {
     localStorage.setItem('deviceStates', JSON.stringify(deviceStates));
   }, [deviceStates]);
 
-  useEffect(() => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      Object.entries(deviceStates).forEach(([device, isOn]) => {
-        let command = '';
-        switch(device) {
-          case 'device1':
-            command = isOn ? 'fan_on' : 'fan_off';
-            break;
-          case 'device2':
-            command = isOn ? 'light_on' : 'light_off';
-            break;
-          case 'device3':
-            command = isOn ? 'water_on' : 'water_off';
-            break;
-          case 'device4':
-            command = isOn ? 'mist_on' : 'mist_off';
-            break;
-          default:
-            break;
-        }
-        if (command) {
-          ws.current.send(command);
-        }
-      });
-    }
-  }, [ws, deviceStates]);
-
   const toggleDevice = (device) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      // 현재 상태의 반대값을 계산
       const newState = !deviceStates[device];
       
-      // 디바이스별 명령어 설정
       let command = '';
       switch(device) {
         case 'device1':
@@ -66,10 +37,10 @@ function StdControlBtn({ ws }) {
           break;
       }
 
-      // 웹소켓으로 명령어 전송
-      ws.current.send(command);
+      if (command) {
+        ws.current.send(command);
+      }
       
-      // UI 상태 업데이트
       setDeviceStates(prev => ({
         ...prev,
         [device]: newState
