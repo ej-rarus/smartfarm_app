@@ -30,7 +30,7 @@ function StdControlBtn({ ws }) {
             command = isOn ? 'water_on' : 'water_off';
             break;
           case 'device4':
-            command = isOn ? 'window_on' : 'window_off';
+            command = isOn ? 'mist_on' : 'mist_off';
             break;
           default:
             break;
@@ -60,7 +60,7 @@ function StdControlBtn({ ws }) {
           command = newState ? 'water_on' : 'water_off';
           break;
         case 'device4':
-          command = newState ? 'window_on' : 'window_off';
+          command = newState ? 'mist_on' : 'mist_off';
           break;
         default:
           break;
@@ -90,8 +90,8 @@ function StdControlBtn({ ws }) {
         if (response.includes('light_off')) setDeviceStates(prev => ({ ...prev, device2: false }));
         if (response.includes('water_on')) setDeviceStates(prev => ({ ...prev, device3: true }));
         if (response.includes('water_off')) setDeviceStates(prev => ({ ...prev, device3: false }));
-        if (response.includes('window_on')) setDeviceStates(prev => ({ ...prev, device4: true }));
-        if (response.includes('window_off')) setDeviceStates(prev => ({ ...prev, device4: false }));
+        if (response.includes('mist_on')) setDeviceStates(prev => ({ ...prev, device4: true }));
+        if (response.includes('mist_off')) setDeviceStates(prev => ({ ...prev, device4: false }));
       };
 
       wsInstance.addEventListener('message', handleMessage);
@@ -108,7 +108,7 @@ function StdControlBtn({ ws }) {
               {device === 'device1' && '환풍기'}
               {device === 'device2' && '조명'}
               {device === 'device3' && '급수'}
-              {device === 'device4' && '창문'}
+              {device === 'device4' && '미스팅'}
             </span>
             <button
               className={`toggle-btn ${isOn ? 'on' : 'off'}`}
