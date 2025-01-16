@@ -24,45 +24,70 @@ export default function SignUpForm() {
     e.preventDefault();
 
     // 유효성 검사
+    if (!isEmailValid) {
+        alert("유효한 이메일 형식을 입력해 주세요.");
+        return;
+    }
     if (!isEmailUnique) {
-      alert("이메일 중복 확인을 완료해 주세요.");
-      return;
+        alert("이메일 중복 확인을 완료해 주세요.");
+        return;
     }
     if (!isPasswordMatch) {
-      alert("비밀번호가 일치하지 않습니다.");
-      return;
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
     }
-    if (!isEmailValid) {
-      alert("유효한 이메일 형식을 입력해 주세요.");
-      return;
+    if (passwordStrength === "약함") {
+        alert("비밀번호가 너무 약합니다.");
+        return;
     }
 
     // 서버로 전송할 데이터
     const userData = {
-      email_adress: email,
-      password,
-      username,
-      marketing_agree: marketingInfo,
+        email_adress: email,
+        password,
+        username,
+        marketing_agree: marketingInfo,
     };
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/signup`, userData);
-      alert("회원가입이 완료되었습니다.");
-      navigate('/welcome');
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/signup`,
+            userData
+        );
+
+        if (response.status === 200) {
+            alert("회원가입이 완료되었습니다.");
+            navigate('/welcome');
+        }
     } catch (error) {
-      console.error("회원가입 실패:", error);
-      alert("회원가입 중 오류가 발생했습니다.");
+        console.error("회원가입 실패:", error);
+        alert(error.response?.data?.message || "회원가입 중 오류가 발생했습니다.");
     }
   };
 
   const checkEmailDuplication = async () => {
     if (!isEmailValid) {
-      alert("유효한 이메일 형식을 입력해 주세요.");
-      return;
+        alert("유효한 이메일 형식을 입력해 주세요.");
+        return;
     }
-    const isUnique = email !== "duplicate@example.com"; // 실제로는 서버 요청을 통해 확인
-    setIsEmailUnique(isUnique);
-    alert(isUnique ? "사용 가능한 이메일입니다." : "이미 사용 중인 이메일입니다.");
+
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_VERSION}/user/`);
+        
+        // 현재 입력된 이메일과 동일한 이메일이 있는지 확인
+        const isEmailExists = response.data.data.some(user => user.email_adress === email);
+        
+        if (isEmailExists) {
+            setIsEmailUnique(false);
+            alert("이미 사용 중인 이메일입니다.");
+        } else {
+            setIsEmailUnique(true);
+            alert("사용 가능한 이메일입니다.");
+        }
+    } catch (error) {
+        console.error("이메일 중복 확인 실패:", error);
+        alert("이메일 중복 확인 중 오류가 발생했습니다.");
+    }
   };
 
   const handleEmailChange = (e) => {

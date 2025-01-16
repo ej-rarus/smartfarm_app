@@ -22,16 +22,16 @@ function StdControlBtn({ ws }) {
       let command = '';
       switch(device) {
         case 'device1':
-          command = newState ? 'fan_on' : 'fan_off';
+          command = newState ? 'FAN_ON' : 'FAN_OFF';
           break;
         case 'device2':
-          command = newState ? 'light_on' : 'light_off';
+          command = newState ? 'LED_ON' : 'LED_OFF';
           break;
         case 'device3':
-          command = newState ? 'water_on' : 'water_off';
+          command = newState ? 'PUMP_ON' : 'PUMP_OFF';
           break;
         case 'device4':
-          command = newState ? 'mist_on' : 'mist_off';
+          command = newState ? 'MIST_ON' : 'MIST_OFF';
           break;
         default:
           break;
@@ -55,14 +55,14 @@ function StdControlBtn({ ws }) {
       const handleMessage = (event) => {
         const response = event.data;
         // 서버 응답에 따라 상태 업데이트
-        if (response.includes('fan_on')) setDeviceStates(prev => ({ ...prev, device1: true }));
-        if (response.includes('fan_off')) setDeviceStates(prev => ({ ...prev, device1: false }));
-        if (response.includes('light_on')) setDeviceStates(prev => ({ ...prev, device2: true }));
-        if (response.includes('light_off')) setDeviceStates(prev => ({ ...prev, device2: false }));
-        if (response.includes('water_on')) setDeviceStates(prev => ({ ...prev, device3: true }));
-        if (response.includes('water_off')) setDeviceStates(prev => ({ ...prev, device3: false }));
-        if (response.includes('mist_on')) setDeviceStates(prev => ({ ...prev, device4: true }));
-        if (response.includes('mist_off')) setDeviceStates(prev => ({ ...prev, device4: false }));
+        if (response.includes('FAN_ON')) setDeviceStates(prev => ({ ...prev, device1: true }));
+        if (response.includes('FAN_OFF')) setDeviceStates(prev => ({ ...prev, device1: false }));
+        if (response.includes('LED_ON')) setDeviceStates(prev => ({ ...prev, device2: true }));
+        if (response.includes('LED_OFF')) setDeviceStates(prev => ({ ...prev, device2: false }));
+        if (response.includes('PUMP_ON')) setDeviceStates(prev => ({ ...prev, device3: true }));
+        if (response.includes('PUMP_OFF')) setDeviceStates(prev => ({ ...prev, device3: false }));
+        if (response.includes('MIST_ON')) setDeviceStates(prev => ({ ...prev, device4: true }));
+        if (response.includes('MIST_OFF')) setDeviceStates(prev => ({ ...prev, device4: false }));
       };
 
       wsInstance.addEventListener('message', handleMessage);
