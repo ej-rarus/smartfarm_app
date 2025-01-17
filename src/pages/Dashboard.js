@@ -42,7 +42,7 @@ function Dashboard() {
     // 센서 데이터 가져오기
     const fetchSensorData = async () => {
         try {
-            const response = await fetch('http://3.39.126.121:3000/api/sensor-data/1');
+            const response = await fetch('http://3.39.126.121:3000/api/sensor-data/2');
             if (!response.ok) {
                 throw new Error('센서 데이터 조회에 실패했습니다');
             }
