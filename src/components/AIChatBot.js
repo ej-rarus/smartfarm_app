@@ -159,7 +159,11 @@ export default function AIChatBot() {
               disabled={isLoading}
             />
             <button type="submit" className="chatbot-send-button" disabled={isLoading}>
-              <i className="fas fa-paper-plane"></i>
+            <img 
+            src="/images/jh_icon.png" 
+            alt="장협봇" 
+            className="chatbot-icon"
+          />
             </button>
           </form>
         </div>
