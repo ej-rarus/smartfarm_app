@@ -187,7 +187,7 @@ function Dashboard() {
     const lightChartData = {
         labels: sensorData.light.labels,
         datasets: [{
-            label: '조도',
+            label: '광합성광양자속밀도',
             data: sensorData.light.values,
             borderColor: 'rgb(255, 205, 86)',
             backgroundColor: 'rgba(255, 205, 86, 0.5)',
