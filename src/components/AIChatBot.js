@@ -111,7 +111,11 @@ export default function AIChatBot() {
           className="chatbot-button"
           onClick={() => setIsOpen(true)}
         >
-          장협봇
+          <img 
+            src="/images/jh_icon.png" 
+            alt="장협봇" 
+            className="chatbot-icon"
+          />
         </button>
       ) : (
         <div className="chatbot-window">

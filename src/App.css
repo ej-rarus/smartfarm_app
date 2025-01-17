@@ -1016,27 +1016,24 @@ footer{
 
 .chatbot-button {
   position: fixed;
+  bottom: 20px;
   right: 20px;
-  bottom: 80px;
-  width: 5rem;
-  height:5rem;
-  padding: 0.5rem;
-  border-radius: 55px;
-  background-color: var(--point-color3);
-  color: white;
+  background: none;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 0;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  z-index: 999;
-  transition: transform 0.2s ease;
+  z-index: 1000;
 }
 
-.chatbot-button:hover {
-  transform: scale(1.05);
+.chatbot-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.chatbot-button:hover .chatbot-icon {
+  transform: scale(1.1);
 }
 
 /* iOS 안전영역 대응 */
