@@ -109,6 +109,7 @@ function Dashboard() {
     // 차트 옵션 설정
     const tempOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             title: {
                 display: true,
@@ -126,6 +127,7 @@ function Dashboard() {
 
     const humidOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             title: {
                 display: true,
@@ -143,17 +145,18 @@ function Dashboard() {
 
     const lightOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             title: {
                 display: true,
-                text: '조도 (lux)'
+                text: 'PPFD (μmol/m²/s)'
             }
         },
         scales: {
             y: {
                 beginAtZero: true,
                 min: 0,
-                max: 2000
+                max: 1000
             }
         }
     };
