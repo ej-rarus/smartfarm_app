@@ -27,8 +27,8 @@ export default function Camera() {
 
   return (
     <div className="camera-container">
-      <h1>ESP32-CAM 실시간 스트리밍</h1>
-      <p>현재 ESP32-CAM에서 전송되는 실시간 영상입니다:</p>
+      <h2>ESP32-CAM 실시간 스트리밍</h2>
+      
       
       {error && <div className="error-message">{error}</div>}
       
