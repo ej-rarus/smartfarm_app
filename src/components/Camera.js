@@ -5,7 +5,7 @@ export default function Camera() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  const streamUrl ='http://192.168.0.56:81/stream';
+  const streamUrl ='http://dsfarm6f.iptime.org:10101/stream';
 
   const handleImageError = () => {
     setIsStreaming(false);
