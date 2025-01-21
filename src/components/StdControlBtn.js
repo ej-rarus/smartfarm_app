@@ -11,6 +11,22 @@ function StdControlBtn({ ws }) {
     };
   });
 
+  // 스케줄러 설정을 위한 상태
+  const [schedules, setSchedules] = useState(() => {
+    const savedSchedules = localStorage.getItem('deviceSchedules');
+    return savedSchedules ? JSON.parse(savedSchedules) : {
+      device1: { startTime: '', endTime: '', isActive: false },
+      device2: { startTime: '', endTime: '', isActive: false },
+      device3: { startTime: '', endTime: '', isActive: false },
+      device4: { startTime: '', endTime: '', isActive: false }
+    };
+  });
+
+  // 스케줄 저장
+  useEffect(() => {
+    localStorage.setItem('deviceSchedules', JSON.stringify(schedules));
+  }, [schedules]);
+
   useEffect(() => {
     localStorage.setItem('deviceStates', JSON.stringify(deviceStates));
   }, [deviceStates]);
@@ -70,13 +86,57 @@ function StdControlBtn({ ws }) {
     }
   }, [ws]);
 
+  // 스케줄러 체크 및 실행
+  useEffect(() => {
+    const checkSchedules = () => {
+      const now = new Date();
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+
+      Object.entries(schedules).forEach(([device, schedule]) => {
+        if (schedule.isActive && schedule.startTime && schedule.endTime) {
+          const [startHour, startMinute] = schedule.startTime.split(':').map(Number);
+          const [endHour, endMinute] = schedule.endTime.split(':').map(Number);
+          const startTimeMinutes = startHour * 60 + startMinute;
+          const endTimeMinutes = endHour * 60 + endMinute;
+
+          // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인
+          const shouldBeOn = currentTime >= startTimeMinutes && currentTime <= endTimeMinutes;
+
+          // 현재 상태와 다르면 상태 변경
+          if (shouldBeOn !== deviceStates[device]) {
+            toggleDevice(device);
+          }
+        }
+      });
+    };
+
+    // 1분마다 스케줄 체크
+    const interval = setInterval(checkSchedules, 60000);
+    checkSchedules(); // 초기 체크
+
+    return () => clearInterval(interval);
+  }, [schedules, deviceStates]);
+
+  // 스케줄 설정 변경 핸들러
+  const handleScheduleChange = (device, field, value) => {
+    setSchedules(prev => ({
+      ...prev,
+      [device]: {
+        ...prev[device],
+        [field]: value
+      }
+    }));
+  };
+
   return (
     <div className="control-btn-container">
       <div className="control-sets">
         <button 
           className="check-status-btn"
           onClick={() => {
-            ws.current.send('CHECK_STATUS');
+            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+              ws.current.send('CHECK_STATUS');
+            }
           }}
         >
           디바이스 상태 확인
@@ -90,12 +150,38 @@ function StdControlBtn({ ws }) {
               {device === 'device3' && '급수'}
               {device === 'device4' && '미스팅'}
             </span>
-            <button
-              className={`toggle-btn ${isOn ? 'on' : 'off'}`}
-              onClick={() => toggleDevice(device)}
-            >
-              {isOn ? 'ON' : 'OFF'}
-            </button>
+            <div className="device-controls">
+              <button
+                className={`toggle-btn ${isOn ? 'on' : 'off'}`}
+                onClick={() => toggleDevice(device)}
+              >
+                {isOn ? 'ON' : 'OFF'}
+              </button>
+              
+              {/* 스케줄러 설정 UI */}
+              <div className="scheduler-settings">
+                <input
+                  type="time"
+                  value={schedules[device].startTime}
+                  onChange={(e) => handleScheduleChange(device, 'startTime', e.target.value)}
+                  placeholder="시작 시간"
+                />
+                <span>부터</span>
+                <input
+                  type="time"
+                  value={schedules[device].endTime}
+                  onChange={(e) => handleScheduleChange(device, 'endTime', e.target.value)}
+                  placeholder="종료 시간"
+                />
+                <span>까지</span>
+                <button
+                  className={`scheduler-btn ${schedules[device].isActive ? 'active' : ''}`}
+                  onClick={() => handleScheduleChange(device, 'isActive', !schedules[device].isActive)}
+                >
+                  {schedules[device].isActive ? '스케줄 사용 중' : '스케줄 사용'}
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>
