@@ -2251,6 +2251,10 @@ input:focus, textarea:focus, select:focus {
 
 /* CropPostDetail 스타일 */
 .feed-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   max-width: 100%;
   margin: 0 auto;
 }

@@ -147,8 +147,25 @@ export default function TodaysPriceInfo() {
                       .filter(item => item.countyname === "평균")
                       .slice(-5)
                       .map(item => {
-                        const date = new Date(item.regday);
-                        return `${date.getMonth() + 1}/${date.getDate()}`;
+                        // 날짜 파싱을 더 안전하게 처리
+                        try {
+                          // YYYY-MM-DD 형식인 경우
+                          if (item.regday.includes('-')) {
+                            const [year, month, day] = item.regday.split('-');
+                            return `${parseInt(month)}/${parseInt(day)}`;
+                          }
+                          // YYYYMMDD 형식인 경우
+                          else if (item.regday.length === 8) {
+                            const month = item.regday.substring(4, 6);
+                            const day = item.regday.substring(6, 8);
+                            return `${parseInt(month)}/${parseInt(day)}`;
+                          }
+                          // 다른 형식의 경우 원본 데이터 반환
+                          return item.regday;
+                        } catch (error) {
+                          console.error('Date parsing error:', error, item.regday);
+                          return item.regday;
+                        }
                       }),
                     datasets: [
                       {
