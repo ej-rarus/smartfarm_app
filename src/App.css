@@ -854,9 +854,21 @@ footer{
 }
 
 .response-item {
-  padding: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
   border-bottom: 1px solid #eee;
-  font-family: 'Pretendard-Regular';
+}
+
+.response-text {
+  flex: 1;
+}
+
+.response-time {
+  color: #666;
+  font-size: 0.9em;
+  margin-left: 15px;
 }
 
 .response-item:last-child {
@@ -1019,14 +1031,14 @@ footer{
 .chatbot-container {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  left: 20px;
   z-index: 1000;
 }
 
 .chatbot-button {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  left: 20px;
   background: none;
   border: none;
   padding: 0;
@@ -2274,6 +2286,48 @@ input:focus, textarea:focus, select:focus {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.timer-settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.timer-settings input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 80px;
+}
+
+.timer-settings span {
+  color: #666;
+  white-space: nowrap;
+}
+
+.timer-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.timer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timer-btn.active {
+  background-color: #28a745;
+}
+
+.timer-btn:not(:disabled):hover {
+  opacity: 0.9;
 }
 
 

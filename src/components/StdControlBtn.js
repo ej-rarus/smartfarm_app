@@ -11,50 +11,66 @@ function StdControlBtn({ ws }) {
     };
   });
 
-  // 스케줄러 설정을 위한 상태
-  const [schedules, setSchedules] = useState(() => {
-    const savedSchedules = localStorage.getItem('deviceSchedules');
-    return savedSchedules ? JSON.parse(savedSchedules) : {
-      device1: { startTime: '', endTime: '', isActive: false },
-      device2: { startTime: '', endTime: '', isActive: false },
-      device3: { startTime: '', endTime: '', isActive: false },
-      device4: { startTime: '', endTime: '', isActive: false }
+  // 타이머 설정을 위한 상태
+  const [timerSettings, setTimerSettings] = useState(() => {
+    const savedTimers = localStorage.getItem('deviceTimers');
+    return savedTimers ? JSON.parse(savedTimers) : {
+      device1: { duration: '', isActive: false },
+      device2: { duration: '', isActive: false },
+      device3: { duration: '', isActive: false },
+      device4: { duration: '', isActive: false }
     };
   });
 
-  // 스케줄 저장
+  // 타이머 ID 저장
+  const timerRefs = React.useRef({});
+
+  // 타이머 설정 저장
   useEffect(() => {
-    localStorage.setItem('deviceSchedules', JSON.stringify(schedules));
-  }, [schedules]);
+    localStorage.setItem('deviceTimers', JSON.stringify(timerSettings));
+  }, [timerSettings]);
 
   useEffect(() => {
     localStorage.setItem('deviceStates', JSON.stringify(deviceStates));
   }, [deviceStates]);
 
-  const toggleDevice = (device) => {
+  const toggleDevice = (device, duration = null) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const newState = !deviceStates[device];
       
       let command = '';
       switch(device) {
-        case 'device1':
-          command = newState ? 'FAN_ON' : 'FAN_OFF';
+        case 'device1': 
+          command = newState ? 
+            (duration ? `FAN_TIMER_${duration}` : 'FAN_ON') : 
+            'FAN_OFF'; 
           break;
-        case 'device2':
-          command = newState ? 'LED_ON' : 'LED_OFF';
+        case 'device2': 
+          command = newState ? 
+            (duration ? `LED_TIMER_${duration}` : 'LED_ON') : 
+            'LED_OFF'; 
           break;
-        case 'device3':
-          command = newState ? 'PUMP_ON' : 'PUMP_OFF';
+        case 'device3': 
+          command = newState ? 
+            (duration ? `PUMP_TIMER_${duration}` : 'PUMP_ON') : 
+            'PUMP_OFF'; 
           break;
-        case 'device4':
-          command = newState ? 'MIST_ON' : 'MIST_OFF';
+        case 'device4': 
+          command = newState ? 
+            (duration ? `MIST_TIMER_${duration}` : 'MIST_ON') : 
+            'MIST_OFF'; 
           break;
-        default:
-          break;
+        default: break;
       }
 
       if (command) {
-        ws.current.send(command);
+        try {
+          console.log('Attempting to send command:', command);
+          ws.current.send(command);
+          console.log('Command sent successfully');
+        } catch (error) {
+          console.error('Error sending command:', error);
+        }
       }
       
       setDeviceStates(prev => ({
@@ -62,6 +78,125 @@ function StdControlBtn({ ws }) {
         [device]: newState
       }));
     }
+  };
+
+  // 타이머 시작
+  const startTimer = (device) => {
+    const duration = parseInt(timerSettings[device].duration);
+    if (!duration) return;
+
+    // 타이머 시작 메시지 전송
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        let command = '';
+        switch(device) {
+            case 'device1': command = `FAN_TIMER_${duration}`; break;
+            case 'device2': command = `LED_TIMER_${duration}`; break;
+            case 'device3': command = `PUMP_TIMER_${duration}`; break;
+            case 'device4': command = `MIST_TIMER_${duration}`; break;
+            default: break;
+        }
+
+        if (command) {
+            try {
+                console.log('Sending timer start command:', command);
+                ws.current.send(command);
+                console.log('Timer start command sent successfully');
+            } catch (error) {
+                console.error('Error sending timer command:', error);
+                return; // 메시지 전송 실패시 타이머 시작하지 않음
+            }
+        }
+    } else {
+        console.error('WebSocket is not open');
+        return;
+    }
+
+    // 타이머 ID 저장 및 상태 업데이트
+    const timerId = setTimeout(() => {
+        if (deviceStates[device]) {
+            toggleDevice(device);
+        }
+        setTimerSettings(prev => ({
+            ...prev,
+            [device]: { ...prev[device], isActive: false }
+        }));
+    }, duration * 60 * 60 * 1000);
+
+    timerRefs.current[device] = timerId;
+    
+    // 디바이스 상태 업데이트
+    setDeviceStates(prev => ({
+        ...prev,
+        [device]: true
+    }));
+  };
+
+  // 타이머 중지
+  const stopTimer = (device) => {
+    // 타이머 중지 메시지 전송
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        let command = '';
+        switch(device) {
+            case 'device1': command = 'FAN_OFF'; break;
+            case 'device2': command = 'LED_OFF'; break;
+            case 'device3': command = 'PUMP_OFF'; break;
+            case 'device4': command = 'MIST_OFF'; break;
+            default: break;
+        }
+
+        if (command) {
+            try {
+                console.log('Sending timer stop command:', command);
+                ws.current.send(command);
+                console.log('Timer stop command sent successfully');
+            } catch (error) {
+                console.error('Error sending stop command:', error);
+            }
+        }
+    }
+
+    // 타이머 클리어 및 상태 업데이트
+    if (timerRefs.current[device]) {
+        clearTimeout(timerRefs.current[device]);
+        timerRefs.current[device] = null;
+    }
+
+    // 디바이스 상태 업데이트
+    setDeviceStates(prev => ({
+        ...prev,
+        [device]: false
+    }));
+  };
+
+  // 타이머 설정 변경 핸들러
+  const handleTimerChange = (device, field, value) => {
+    setTimerSettings(prev => ({
+      ...prev,
+      [device]: {
+        ...prev[device],
+        [field]: value
+      }
+    }));
+  };
+
+  // 타이머 토글
+  const toggleTimer = (device) => {
+    const currentSettings = timerSettings[device];
+    const newIsActive = !currentSettings.isActive;
+
+    if (newIsActive) {
+        startTimer(device);
+    } else {
+        stopTimer(device);
+    }
+
+    setTimerSettings(prev => ({
+        ...prev,
+        [device]: {
+            ...prev[device],
+            isActive: newIsActive
+        }
+    }));
   };
 
   // 웹소켓 메시지 수신 처리
@@ -85,48 +220,6 @@ function StdControlBtn({ ws }) {
       return () => wsInstance.removeEventListener('message', handleMessage);
     }
   }, [ws]);
-
-  // 스케줄러 체크 및 실행
-  useEffect(() => {
-    const checkSchedules = () => {
-      const now = new Date();
-      const currentTime = now.getHours() * 60 + now.getMinutes();
-
-      Object.entries(schedules).forEach(([device, schedule]) => {
-        if (schedule.isActive && schedule.startTime && schedule.endTime) {
-          const [startHour, startMinute] = schedule.startTime.split(':').map(Number);
-          const [endHour, endMinute] = schedule.endTime.split(':').map(Number);
-          const startTimeMinutes = startHour * 60 + startMinute;
-          const endTimeMinutes = endHour * 60 + endMinute;
-
-          // 현재 시간이 시작 시간과 종료 시간 사이에 있는지 확인
-          const shouldBeOn = currentTime >= startTimeMinutes && currentTime <= endTimeMinutes;
-
-          // 현재 상태와 다르면 상태 변경
-          if (shouldBeOn !== deviceStates[device]) {
-            toggleDevice(device);
-          }
-        }
-      });
-    };
-
-    // 1분마다 스케줄 체크
-    const interval = setInterval(checkSchedules, 60000);
-    checkSchedules(); // 초기 체크
-
-    return () => clearInterval(interval);
-  }, [schedules, deviceStates]);
-
-  // 스케줄 설정 변경 핸들러
-  const handleScheduleChange = (device, field, value) => {
-    setSchedules(prev => ({
-      ...prev,
-      [device]: {
-        ...prev[device],
-        [field]: value
-      }
-    }));
-  };
 
   return (
     <div className="control-btn-container">
@@ -158,27 +251,22 @@ function StdControlBtn({ ws }) {
                 {isOn ? 'ON' : 'OFF'}
               </button>
               
-              {/* 스케줄러 설정 UI */}
-              <div className="scheduler-settings">
+              <div className="timer-settings">
                 <input
-                  type="time"
-                  value={schedules[device].startTime}
-                  onChange={(e) => handleScheduleChange(device, 'startTime', e.target.value)}
-                  placeholder="시작 시간"
+                  type="number"
+                  value={timerSettings[device].duration}
+                  onChange={(e) => handleTimerChange(device, 'duration', e.target.value)}
+                  placeholder="시간 입력"
+                  min="1"
+                  max="24"
                 />
-                <span>부터</span>
-                <input
-                  type="time"
-                  value={schedules[device].endTime}
-                  onChange={(e) => handleScheduleChange(device, 'endTime', e.target.value)}
-                  placeholder="종료 시간"
-                />
-                <span>까지</span>
+                <span>시간 동안 켜기</span>
                 <button
-                  className={`scheduler-btn ${schedules[device].isActive ? 'active' : ''}`}
-                  onClick={() => handleScheduleChange(device, 'isActive', !schedules[device].isActive)}
+                  className={`timer-btn ${timerSettings[device].isActive ? 'active' : ''}`}
+                  onClick={() => toggleTimer(device)}
+                  disabled={!timerSettings[device].duration}
                 >
-                  {schedules[device].isActive ? '스케줄 사용 중' : '스케줄 사용'}
+                  {timerSettings[device].isActive ? '타이머 중지' : '타이머 시작'}
                 </button>
               </div>
             </div>

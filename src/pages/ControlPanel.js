@@ -1,6 +1,5 @@
 import '../App.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
 import StdControlBtn from '../components/StdControlBtn';
 import AIChatBot from '../components/AIChatBot';
 function ControlPanel() {
@@ -11,48 +10,6 @@ function ControlPanel() {
   const [isConnected, setIsConnected] = useState(false);
   const ws = useRef(null);
   const reconnectTimeout = useRef(null);
-  const [data2] = useState([{
-    name: 'Page A',
-    uv: 40,
-    pv: 24,
-    amt: 24,
-  },
-  {
-    name: 'Page B',
-    uv: 30,
-    pv: 13,
-    amt: 22,
-  },
-  {
-    name: 'Page C',
-    uv: 20,
-    pv: 98,
-    amt: 22,
-  },
-  {
-    name: 'Page D',
-    uv: 27,
-    pv: 39,
-    amt: 20,
-  },
-  {
-    name: 'Page E',
-    uv: 18,
-    pv: 48,
-    amt: 21,
-  },
-  {
-    name: 'Page F',
-    uv: 23,
-    pv: 38,
-    amt: 25,
-  },
-  {
-    name: 'Page G',
-    uv: 34,
-    pv: 43,
-    amt: 21,
-  },]);
 
   const connectWebSocket = useCallback(() => {
     try {
@@ -70,7 +27,14 @@ function ControlPanel() {
 
       ws.current.onmessage = (event) => {
         const response = event.data;
-        setResponses(prev => [...prev, response]);
+        const timestamp = new Date().toLocaleTimeString('ko-KR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        
+        setResponses(prev => [...prev, { message: response, time: timestamp }]);
       };
 
       ws.current.onerror = (error) => {
@@ -111,7 +75,7 @@ function ControlPanel() {
 
   useEffect(() => {
     if (responseListRef.current) {
-      responseListRef.current.scrollTop = responseListRef.current.scrollHeight;
+      responseListRef.current.scrollTop = 0;
     }
   }, [responses]);
 
@@ -128,15 +92,7 @@ function ControlPanel() {
   return (
     <div className="page-container">
       <h1 className="page-title">제어패널</h1>
-      <hr
-        style={{
-          border: 'none',
-          height: '2px',
-          backgroundColor: 'gray',
-          width: '13rem',
-          marginTop: '0.5rem',
-        }}
-      />
+      
       
       <StdControlBtn ws={ws} />
 
@@ -177,24 +133,17 @@ function ControlPanel() {
         <div className="response-container">
           <h3>응답 메시지:</h3>
           <div className="response-list" ref={responseListRef}>
-            {responses.map((response, index) => (
+            {responses.slice().reverse().map((item, index) => (
               <div key={index} className="response-item">
-                {response}
+                <span className="response-text">{item.message}</span>
+                <span className="response-time">{item.time}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <ResponsiveContainer width="90%" height={300}>
-        <LineChart data={data2}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis/>
-          <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-          <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-        </LineChart>
-      </ResponsiveContainer>
+      
       <AIChatBot />
 
     </div>
