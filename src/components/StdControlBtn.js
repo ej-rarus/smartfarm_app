@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 function StdControlBtn({ ws }) {
@@ -25,19 +25,13 @@ function StdControlBtn({ ws }) {
   // 타이머 ID 저장
   const timerRefs = React.useRef({});
 
-  // 초기 상태 로드
-  useEffect(() => {
-    fetchControlStats();
-  }, []);
-
-  // DB에서 제어 상태 조회
-  const fetchControlStats = async () => {
+  // fetchControlStats를 useCallback으로 감싸기
+  const fetchControlStats = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/control-stat`);
       if (response.data.status === 200) {
         setControlStats(response.data.data);
         
-        // DB 상태를 기반으로 deviceStates 업데이트
         const newDeviceStates = { ...deviceStates };
         response.data.data.forEach(stat => {
           const deviceKey = getDeviceKey(stat.device);
@@ -50,7 +44,12 @@ function StdControlBtn({ ws }) {
     } catch (error) {
       console.error('제어 상태 조회 실패:', error);
     }
-  };
+  }, [deviceStates]); // deviceStates를 의존성으로 추가
+
+  // useEffect에 fetchControlStats 추가
+  useEffect(() => {
+    fetchControlStats();
+  }, [fetchControlStats]);
 
   // 디바이스 이름을 키로 변환
   const getDeviceKey = (deviceName) => {
@@ -89,29 +88,6 @@ function StdControlBtn({ ws }) {
       }
     } catch (error) {
       console.error('상태 업데이트 실패:', error);
-    }
-  };
-
-  // 디바이스 상태 업데이트 함수
-  const updateDeviceStatus = async (device, status) => {
-    try {
-      const deviceNames = {
-        device1: 'FAN',
-        device2: 'LED',
-        device3: 'PUMP',
-        device4: 'MIST'
-      };
-
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/control-status`, {
-        device: deviceNames[device],
-        status: status
-      });
-
-      if (response.status !== 200) {
-        console.error('상태 업데이트 실패:', response.data);
-      }
-    } catch (error) {
-      console.error('상태 업데이트 중 오류 발생:', error);
     }
   };
 
