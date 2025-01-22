@@ -283,16 +283,7 @@ function StdControlBtn({ ws }) {
   return (
     <div className="control-btn-container">
       <div className="control-sets">
-        <button 
-          className="check-status-btn"
-          onClick={() => {
-            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-              ws.current.send('CHECK_STATUS');
-            }
-          }}
-        >
-          디바이스 상태 확인
-        </button>
+        
 
         {Object.entries(deviceStates).map(([device, isOn]) => (
           <div className="control-set" key={device}>

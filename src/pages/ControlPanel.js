@@ -2,6 +2,7 @@ import '../App.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import StdControlBtn from '../components/StdControlBtn';
 import AIChatBot from '../components/AIChatBot';
+import Camera from '../components/Camera';
 function ControlPanel() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
@@ -93,7 +94,8 @@ function ControlPanel() {
     <div className="page-container">
       <h1 className="page-title">제어패널</h1>
       
-      
+      <Camera />
+
       <StdControlBtn ws={ws} />
 
       <div className="websocket-container">
