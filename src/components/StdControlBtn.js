@@ -140,7 +140,7 @@ function StdControlBtn({ ws }) {
       if (command) {
         try {
           ws.current.send(command);
-          updateControlStat(device, `TIMER_${duration}`);
+          updateControlStat(device, 'ON');
         } catch (error) {
           console.error('Error sending timer command:', error);
           return;
@@ -221,6 +221,7 @@ function StdControlBtn({ ws }) {
 
     if (newIsActive) {
         startTimer(device);
+        
     } else {
         stopTimer(device);
     }
