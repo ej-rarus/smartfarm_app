@@ -940,6 +940,8 @@ footer{
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 20rem;
+  min-height: 50px;  /* 최소 높이만 추가 */
 }
 
 .device-label {
@@ -952,9 +954,8 @@ footer{
 
 .device-controls {
   display: flex;
-  width: 100%;
   flex-direction: column;
-  gap: 15px;
+  align-items: flex-start;  /* 좌측 정렬만 추가 */
 }
 
 .toggle-btn {

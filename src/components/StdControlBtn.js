@@ -259,8 +259,6 @@ function StdControlBtn({ ws }) {
   return (
     <div className="control-btn-container">
       <div className="control-sets">
-        
-
         {Object.entries(deviceStates).map(([device, isOn]) => (
           <div className="control-set" key={device}>
             <span className="device-label">
@@ -277,24 +275,26 @@ function StdControlBtn({ ws }) {
                 {isOn ? 'ON' : 'OFF'}
               </button>
               
-              <div className="timer-settings">
-                <input
-                  type="number"
-                  value={timerSettings[device].duration}
-                  onChange={(e) => handleTimerChange(device, 'duration', e.target.value)}
-                  placeholder="시간 입력"
-                  min="1"
-                  max="24"
-                />
-                <span>시간 동안 켜기</span>
-                <button
-                  className={`timer-btn ${timerSettings[device].isActive ? 'active' : ''}`}
-                  onClick={() => toggleTimer(device)}
-                  disabled={!timerSettings[device].duration}
-                >
-                  {timerSettings[device].isActive ? '타이머 중지' : '타이머 시작'}
-                </button>
-              </div>
+              {device !== 'device3' && (
+                <div className="timer-settings">
+                  <input
+                    type="number"
+                    value={timerSettings[device].duration}
+                    onChange={(e) => handleTimerChange(device, 'duration', e.target.value)}
+                    placeholder="시간 입력"
+                    min="1"
+                    max={device === 'device4' ? '3600' : '24'}
+                  />
+                  <span>{device === 'device4' ? '초' : '시간'} 동안 켜기</span>
+                  <button
+                    className={`timer-btn ${timerSettings[device].isActive ? 'active' : ''}`}
+                    onClick={() => toggleTimer(device)}
+                    disabled={!timerSettings[device].duration}
+                  >
+                    {timerSettings[device].isActive ? '타이머 중지' : '타이머 시작'}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}
