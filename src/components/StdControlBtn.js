@@ -92,34 +92,42 @@ function StdControlBtn({ ws }) {
   };
 
   const toggleDevice = (device) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const newState = !deviceStates[device];
-      
-      let command = '';
-      switch(device) {
-        case 'device1': command = newState ? 'FAN_ON' : 'FAN_OFF'; break;
-        case 'device2': command = newState ? 'LED_ON' : 'LED_OFF'; break;
-        case 'device3': command = newState ? 'PUMP_ON' : 'PUMP_OFF'; break;
-        case 'device4': command = newState ? 'MIST_ON' : 'MIST_OFF'; break;
-        default: break;
-      }
-
-      if (command) {
-        try {
-          console.log('Sending command:', command);
-          ws.current.send(command);
-          // DB 상태 업데이트
-          updateControlStat(device, newState ? 'ON' : 'OFF');
-        } catch (error) {
-          console.error('Error sending command:', error);
-        }
-      }
-      
-      setDeviceStates(prev => ({
-        ...prev,
-        [device]: newState
-      }));
+    if (!ws.current) {
+      console.error('WebSocket connection not initialized');
+      return;
     }
+
+    if (ws.current.readyState !== WebSocket.OPEN) {
+      console.error('WebSocket is not open. Current state:', ws.current.readyState);
+      return;
+    }
+
+    const newState = !deviceStates[device];
+    
+    let command = '';
+    switch(device) {
+      case 'device1': command = newState ? 'FAN_ON' : 'FAN_OFF'; break;
+      case 'device2': command = newState ? 'LED_ON' : 'LED_OFF'; break;
+      case 'device3': command = newState ? 'PUMP_ON' : 'PUMP_OFF'; break;
+      case 'device4': command = newState ? 'MIST_ON' : 'MIST_OFF'; break;
+      default: break;
+    }
+
+    if (command) {
+      try {
+        console.log('Sending command:', command);
+        ws.current.send(command);
+        // DB 상태 업데이트
+        updateControlStat(device, newState ? 'ON' : 'OFF');
+      } catch (error) {
+        console.error('Error sending command:', error);
+      }
+    }
+    
+    setDeviceStates(prev => ({
+      ...prev,
+      [device]: newState
+    }));
   };
 
   // 타이머 시작
