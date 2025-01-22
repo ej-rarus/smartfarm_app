@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function StdControlBtn({ ws }) {
-  const [deviceStates, setDeviceStates] = useState(() => {
-    const savedStates = localStorage.getItem('deviceStates');
-    return savedStates ? JSON.parse(savedStates) : {
-      device1: false,
-      device2: false,
-      device3: false,
-      device4: false
-    };
+  const [deviceStates, setDeviceStates] = useState({
+    device1: false,
+    device2: false,
+    device3: false,
+    device4: false
   });
+
+  const [controlStats, setControlStats] = useState([]);
 
   // 타이머 설정을 위한 상태
   const [timerSettings, setTimerSettings] = useState(() => {
@@ -25,49 +25,115 @@ function StdControlBtn({ ws }) {
   // 타이머 ID 저장
   const timerRefs = React.useRef({});
 
-  // 타이머 설정 저장
+  // 초기 상태 로드
   useEffect(() => {
-    localStorage.setItem('deviceTimers', JSON.stringify(timerSettings));
-  }, [timerSettings]);
+    fetchControlStats();
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('deviceStates', JSON.stringify(deviceStates));
-  }, [deviceStates]);
+  // DB에서 제어 상태 조회
+  const fetchControlStats = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/control-stat`);
+      if (response.data.status === 200) {
+        setControlStats(response.data.data);
+        
+        // DB 상태를 기반으로 deviceStates 업데이트
+        const newDeviceStates = { ...deviceStates };
+        response.data.data.forEach(stat => {
+          const deviceKey = getDeviceKey(stat.device);
+          if (deviceKey) {
+            newDeviceStates[deviceKey] = stat.status === 'ON';
+          }
+        });
+        setDeviceStates(newDeviceStates);
+      }
+    } catch (error) {
+      console.error('제어 상태 조회 실패:', error);
+    }
+  };
 
-  const toggleDevice = (device, duration = null) => {
+  // 디바이스 이름을 키로 변환
+  const getDeviceKey = (deviceName) => {
+    const deviceMap = {
+      'FAN': 'device1',
+      'LED': 'device2',
+      'PUMP': 'device3',
+      'MIST': 'device4'
+    };
+    return deviceMap[deviceName];
+  };
+
+  // 디바이스 키를 이름으로 변환
+  const getDeviceName = (deviceKey) => {
+    const deviceMap = {
+      'device1': 'FAN',
+      'device2': 'LED',
+      'device3': 'PUMP',
+      'device4': 'MIST'
+    };
+    return deviceMap[deviceKey];
+  };
+
+  // DB 상태 업데이트
+  const updateControlStat = async (device, status) => {
+    try {
+      const deviceName = getDeviceName(device);
+      const stat = controlStats.find(s => s.device === deviceName);
+      
+      if (stat) {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/control-stat/${stat.id}`, {
+          device: deviceName,
+          status: status
+        });
+        await fetchControlStats(); // 상태 새로고침
+      }
+    } catch (error) {
+      console.error('상태 업데이트 실패:', error);
+    }
+  };
+
+  // 디바이스 상태 업데이트 함수
+  const updateDeviceStatus = async (device, status) => {
+    try {
+      const deviceNames = {
+        device1: 'FAN',
+        device2: 'LED',
+        device3: 'PUMP',
+        device4: 'MIST'
+      };
+
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/control-status`, {
+        device: deviceNames[device],
+        status: status
+      });
+
+      if (response.status !== 200) {
+        console.error('상태 업데이트 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('상태 업데이트 중 오류 발생:', error);
+    }
+  };
+
+  const toggleDevice = (device) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const newState = !deviceStates[device];
       
       let command = '';
       switch(device) {
-        case 'device1': 
-          command = newState ? 
-            (duration ? `FAN_TIMER_${duration}` : 'FAN_ON') : 
-            'FAN_OFF'; 
-          break;
-        case 'device2': 
-          command = newState ? 
-            (duration ? `LED_TIMER_${duration}` : 'LED_ON') : 
-            'LED_OFF'; 
-          break;
-        case 'device3': 
-          command = newState ? 
-            (duration ? `PUMP_TIMER_${duration}` : 'PUMP_ON') : 
-            'PUMP_OFF'; 
-          break;
-        case 'device4': 
-          command = newState ? 
-            (duration ? `MIST_TIMER_${duration}` : 'MIST_ON') : 
-            'MIST_OFF'; 
-          break;
+        case 'device1': command = newState ? 'FAN_ON' : 'FAN_OFF'; break;
+        case 'device2': command = newState ? 'LED_ON' : 'LED_OFF'; break;
+        case 'device3': command = newState ? 'PUMP_ON' : 'PUMP_OFF'; break;
+        case 'device4': command = newState ? 'MIST_ON' : 'MIST_OFF'; break;
         default: break;
       }
 
       if (command) {
         try {
-          console.log('Attempting to send command:', command);
+          console.log('Sending command:', command);
           ws.current.send(command);
-          console.log('Command sent successfully');
+          // DB 상태 업데이트
+          updateControlStat(device, newState ? 'ON' : 'OFF');
         } catch (error) {
           console.error('Error sending command:', error);
         }
@@ -85,30 +151,25 @@ function StdControlBtn({ ws }) {
     const duration = parseInt(timerSettings[device].duration);
     if (!duration) return;
 
-    // 타이머 시작 메시지 전송
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        let command = '';
-        switch(device) {
-            case 'device1': command = `FAN_TIMER_${duration}`; break;
-            case 'device2': command = `LED_TIMER_${duration}`; break;
-            case 'device3': command = `PUMP_TIMER_${duration}`; break;
-            case 'device4': command = `MIST_TIMER_${duration}`; break;
-            default: break;
-        }
+      let command = '';
+      switch(device) {
+        case 'device1': command = `FAN_TIMER_${duration}`; break;
+        case 'device2': command = `LED_TIMER_${duration}`; break;
+        case 'device3': command = `PUMP_TIMER_${duration}`; break;
+        case 'device4': command = `MIST_TIMER_${duration}`; break;
+        default: break;
+      }
 
-        if (command) {
-            try {
-                console.log('Sending timer start command:', command);
-                ws.current.send(command);
-                console.log('Timer start command sent successfully');
-            } catch (error) {
-                console.error('Error sending timer command:', error);
-                return; // 메시지 전송 실패시 타이머 시작하지 않음
-            }
+      if (command) {
+        try {
+          ws.current.send(command);
+          updateControlStat(device, `TIMER_${duration}`);
+        } catch (error) {
+          console.error('Error sending timer command:', error);
+          return;
         }
-    } else {
-        console.error('WebSocket is not open');
-        return;
+      }
     }
 
     // 타이머 ID 저장 및 상태 업데이트
@@ -133,26 +194,24 @@ function StdControlBtn({ ws }) {
 
   // 타이머 중지
   const stopTimer = (device) => {
-    // 타이머 중지 메시지 전송
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        let command = '';
-        switch(device) {
-            case 'device1': command = 'FAN_OFF'; break;
-            case 'device2': command = 'LED_OFF'; break;
-            case 'device3': command = 'PUMP_OFF'; break;
-            case 'device4': command = 'MIST_OFF'; break;
-            default: break;
-        }
+      let command = '';
+      switch(device) {
+        case 'device1': command = 'FAN_OFF'; break;
+        case 'device2': command = 'LED_OFF'; break;
+        case 'device3': command = 'PUMP_OFF'; break;
+        case 'device4': command = 'MIST_OFF'; break;
+        default: break;
+      }
 
-        if (command) {
-            try {
-                console.log('Sending timer stop command:', command);
-                ws.current.send(command);
-                console.log('Timer stop command sent successfully');
-            } catch (error) {
-                console.error('Error sending stop command:', error);
-            }
+      if (command) {
+        try {
+          ws.current.send(command);
+          updateControlStat(device, 'OFF');
+        } catch (error) {
+          console.error('Error sending stop command:', error);
         }
+      }
     }
 
     // 타이머 클리어 및 상태 업데이트
