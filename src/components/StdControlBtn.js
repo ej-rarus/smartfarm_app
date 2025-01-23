@@ -383,6 +383,23 @@ function StdControlBtn({ ws }) {
               {device !== "device3" && (
                 <div className="timer-settings">
                   <div className="timer-input-container">
+                    <div className="timer-input-wrapper">
+                    <input
+                      type="number"
+                      className="timer-input"
+                      value={timerSettings[device].interval}
+                      onChange={(e) =>
+                        handleTimerChange(device, "interval", e.target.value)
+                      }
+                      placeholder="반복 주기"
+                      min="1"
+                      max={device === "device4" ? "3600" : "24"}
+                    />
+                    <span className="timer-input-unit">
+                      시간 마다
+                    </span>
+                    </div>
+                    <div className="timer-input-wrapper">
                     <input
                       type="number"
                       className="timer-input"
@@ -390,31 +407,25 @@ function StdControlBtn({ ws }) {
                       onChange={(e) =>
                         handleTimerChange(device, "duration", e.target.value)
                       }
-                      placeholder="시간 입력"
+                      placeholder="작동 시간"
                       min="1"
                       max={device === "device4" ? "3600" : "24"}
                     />
                     <span className="timer-input-unit">
-                      {device === "device4" ? "초" : "시간"} 동안 켜기
+                      {device === "device4" ? "초" : "시간"} 작동
                     </span>
+                    </div>
                     <button
                       className={`timer-btn ${timerSettings[device].isActive ? "active" : ""}`}
                       onClick={() => toggleTimer(device)}
-                      disabled={!timerSettings[device].duration}
+                      disabled={!timerSettings[device].duration || !timerSettings[device].interval}
                     >
-                      {timerSettings[device].isActive
-                        ? "타이머 중지"
-                        : "타이머 시작"}
+                      {timerSettings[device].isActive ? "타이머 중지" : "타이머 시작"}
                     </button>
                   </div>
                   {remainingTime[device] && (
                     <div className="remaining-time-container">
-                      <div className="remaining-time">
-                        남은 시간:{" "}
-                        {device === "device4"
-                          ? `${remainingTime[device]}초`
-                          : remainingTime[device]}
-                      </div>
+                      <div className="remaining-time">{remainingTime[device]}</div>
                     </div>
                   )}
                 </div>
