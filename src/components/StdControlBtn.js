@@ -160,22 +160,24 @@ function StdControlBtn({ ws }) {
   // 타이머 시작
   const startTimer = (device) => {
     const duration = parseInt(timerSettings[device].duration);
-    if (!duration) return;
+    const interval = parseInt(timerSettings[device].interval);
+    if (!duration || !interval) return;
 
+    // WebSocket 요청 추가
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       let command = "";
       switch (device) {
         case "device1":
-          command = `FAN_TIMER_${duration}`;
+          command = `FAN_TIMER_${duration}_${interval}`;
           break;
         case "device2":
-          command = `LED_TIMER_${duration}`;
+          command = `LED_TIMER_${duration}_${interval}`;
           break;
         case "device3":
-          command = `PUMP_TIMER_${duration}`;
+          command = `PUMP_TIMER_${duration}_${interval}`;
           break;
         case "device4":
-          command = `MIST_TIMER_${duration}`;
+          command = `MIST_TIMER_${duration}_${interval}`;
           break;
         default:
           break;
@@ -183,6 +185,7 @@ function StdControlBtn({ ws }) {
 
       if (command) {
         try {
+          console.log("Sending timer command:", command);
           ws.current.send(command);
           updateControlStat(device, "ON");
         } catch (error) {
@@ -192,64 +195,68 @@ function StdControlBtn({ ws }) {
       }
     }
 
-    // 타이머 ID 저장 및 상태 업데이트
-    const timerId = setTimeout(
-      () => {
-        if (deviceStates[device]) {
-          toggleDevice(device);
+    const startNewCycle = () => {
+      // 타이머 ID 저장 및 상태 업데이트
+      const timerId = setTimeout(
+        () => {
+          if (deviceStates[device]) {
+            toggleDevice(device);
+          }
+          setTimerSettings((prev) => ({
+            ...prev,
+            [device]: { ...prev[device], isActive: false },
+          }));
+        },
+        duration * 60 * 60 * 1000
+      );
+
+      const endTime =
+        new Date().getTime() +
+        duration * (device === "device4" ? 1000 : 60 * 60 * 1000);
+
+      // 1초마다 남은 시간 업데이트
+      const intervalId = setInterval(() => {
+        const now = new Date().getTime();
+        const timeLeft = endTime - now;
+
+        if (timeLeft <= 0) {
+          clearInterval(intervalId);
+          setRemainingTime((prev) => ({ ...prev, [device]: null }));
+          return;
         }
-        setTimerSettings((prev) => ({
-          ...prev,
-          [device]: { ...prev[device], isActive: false },
-        }));
-      },
-      duration * 60 * 60 * 1000
-    );
 
-    const endTime =
-      new Date().getTime() +
-      duration * (device === "device4" ? 1000 : 60 * 60 * 1000);
+        if (device === "device4") {
+          // 미스팅의 경우 초 단위로 표시
+          setRemainingTime((prev) => ({
+            ...prev,
+            [device]: Math.ceil(timeLeft / 1000),
+          }));
+        } else {
+          // 다른 기기는 시:분:초 형식으로 표시
+          const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+          setRemainingTime((prev) => ({
+            ...prev,
+            [device]: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
+          }));
+        }
+      }, 1000);
 
-    // 1초마다 남은 시간 업데이트
-    const intervalId = setInterval(() => {
-      const now = new Date().getTime();
-      const timeLeft = endTime - now;
+      // 타이머 ID 저장
+      timerRefs.current[device] = {
+        timer: timerId,
+        interval: intervalId,
+      };
 
-      if (timeLeft <= 0) {
-        clearInterval(intervalId);
-        setRemainingTime((prev) => ({ ...prev, [device]: null }));
-        return;
-      }
-
-      if (device === "device4") {
-        // 미스팅의 경우 초 단위로 표시
-        setRemainingTime((prev) => ({
-          ...prev,
-          [device]: Math.ceil(timeLeft / 1000),
-        }));
-      } else {
-        // 다른 기기는 시:분:초 형식으로 표시
-        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        setRemainingTime((prev) => ({
-          ...prev,
-          [device]: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
-        }));
-      }
-    }, 1000);
-
-    // 타이머 ID 저장
-    timerRefs.current[device] = {
-      timer: timerId,
-      interval: intervalId,
+      // 디바이스 상태 업데이트
+      setDeviceStates((prev) => ({
+        ...prev,
+        [device]: true,
+      }));
     };
 
-    // 디바이스 상태 업데이트
-    setDeviceStates((prev) => ({
-      ...prev,
-      [device]: true,
-    }));
+    startNewCycle();
   };
 
   // 타이머 중지
