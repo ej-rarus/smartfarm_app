@@ -936,6 +936,9 @@ footer{
 }
 
 .control-set {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: #f8f9fa;
   border-radius: 8px;
   padding: 20px;
@@ -2295,6 +2298,7 @@ input:focus, textarea:focus, select:focus {
 
 .timer-settings {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
   margin-top: 10px;
@@ -2335,7 +2339,23 @@ input:focus, textarea:focus, select:focus {
   opacity: 0.9;
 }
 
+.remaining-time {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  color: #666;
+  font-size: 0.9em;
+  font-family: 'Pretendard-Regular';
+  text-align: center;
+}
 
 
+.timer-input{
+  margin-right: 0.5rem;
+}
 
-
+.timer-input-unit{
+  margin-right: 0.5rem;
+}
